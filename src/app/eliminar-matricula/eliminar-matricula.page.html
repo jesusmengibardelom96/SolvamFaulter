@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Eliminar matricula</ion-title>
+    <ion-back-button defaultHref="/admin-alumno" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Curso</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getIdCur($event)" [(ngModel)]="curso">
+      <ion-select-option *ngFor="let cur of cursos" value="{{cur.Nombre}}">{{cur.NombreSolvam}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="curso !== undefined">
+    <ion-label>Asignaturas</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getIdAsig($event)">
+      <div *ngFor="let asig of asignaturas">
+        <ion-select-option *ngIf="asig.ProfesorId === userId && userType === 'Profesor'" value="{{asig.id}}">{{asig.NombreAsig}}</ion-select-option>
+        <ion-select-option *ngIf="userType === 'ProfAdmin' || userType === 'Administrativo'" value="{{asig.id}}">{{asig.NombreAsig}}</ion-select-option>
+      </div>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="asignatura !== undefined">
+    <ion-label>Alumno</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getId($event)" [(ngModel)]="matriculado">
+      <ion-select-option *ngFor="let mat of matriculas" value="{{mat.Id}}">{{mat.Apellido1}} ,{{mat.Nombre}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-button expand="block" class="iconDeleteMatriculado" color="danger" (click)="deleteMatriculado()" *ngIf="matriculado !== undefined">
+    <ion-icon name="trash-outline"></ion-icon>
+  </ion-button>
+</ion-content>

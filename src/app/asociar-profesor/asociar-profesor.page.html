@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Asociar profesor</ion-title>
+    <ion-back-button defaultHref="/admin-profesor" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Nombre</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getNombre($event)" [(ngModel)]="profNombre">
+      <ion-select-option *ngFor="let usu of usuarios" value="{{usu.id}}">{{usu.NombreUsuario}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="comp">
+    <ion-label>Curso</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getCurso($event)" [(ngModel)]="profCurso">
+      <ion-select-option *ngFor="let cur of cursos" value="{{cur.Nombre}}">{{cur.NombreSolvam}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="comp2">
+    <ion-label>Asignatura</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getAsignatura($event)" [(ngModel)]="profAsignatura">
+      <ion-select-option *ngFor="let asig of asignaturas" value="{{asig.NombreAsig}}">{{asig.NombreAsig}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ng-container *ngIf="comp3">
+    <ion-button expand="block" class="iconAsociarProfesor" color="success" (click)="asociarProfesor()">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+    </ion-button>
+  </ng-container>
+</ion-content>

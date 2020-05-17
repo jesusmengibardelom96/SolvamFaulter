@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="userType === 'ProfAdmin' || userType === 'Profesor'">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Mensajes
+    </ion-title>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="showNavOption()" *ngIf="userType === 'Administrativo'">
+        Ir a
+      </ion-button>
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="userType === 'Administrativo' && comp">
+    <ion-item slot="fixed" class="itemFixed">
+      <ion-button slot="end" (click)="goToMensajesEnviados()">
+        Ir Mensajes Enviados
+      </ion-button>
+      <ion-button slot="end" (click)="goToPerfil()">
+        Ir Perfil
+      </ion-button>
+    </ion-item>
+  </ng-container>
+  <ng-container *ngIf="messages2.length === 0; else ElseBlock">
+    <ion-item>
+      <ion-title> No hay mensajes </ion-title>
+    </ion-item>
+  </ng-container>
+  <ng-template #ElseBlock>
+    <ion-card *ngFor="let m of messages2">
+      <ion-item>
+        <ion-label>{{m.fecha}}</ion-label>
+        <ion-button slot="end" (click)="seeMessage(m)">Detalles</ion-button>
+        <ion-button slot="end" (click)="deleteMessage(m)" color="danger">Borrar</ion-button>
+      </ion-item>
+
+      <ion-card-content>{{m.textoMensaje}}</ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>

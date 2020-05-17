@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar profesores</ion-title>
+    <ion-back-button defaultHref="perfil" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngFor="let adminList of adminProfesoresList">
+    <ion-item button (click)="showOptionsAdminProf(adminList)">
+      <ion-title>
+        <ion-label>{{adminList.title}}</ion-label>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+</ion-content>

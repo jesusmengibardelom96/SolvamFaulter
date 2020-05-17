@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Eliminar alumno</ion-title>
+    <ion-back-button defaultHref="/admin-alumno" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Curso</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getIdCur($event)" [(ngModel)]="curso">
+      <ion-select-option *ngFor="let cur of cursos" value="{{cur.Nombre}}">{{cur.NombreSolvam}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="curso !== undefined">
+    <ion-label>Alumnos</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getId($event)" [(ngModel)]="alumno">
+      <ion-select-option *ngFor="let alu of alumnos" value="{{alu.NIA}}">{{alu.Apellido1}}, {{alu.Nombre}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-button expand="block" class="iconDeleteAlumno" color="danger" (click)="deleteAlumno()" *ngIf="alumno !== undefined">
+    <ion-icon name="trash-outline"></ion-icon>
+  </ion-button>
+</ion-content>

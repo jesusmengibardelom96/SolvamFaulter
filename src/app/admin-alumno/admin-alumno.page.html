@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar alumnos</ion-title>
+    <ion-back-button defaultHref="perfil" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngFor="let adminList of adminAlumnosList">
+    <ion-item *ngIf="adminList.title === 'Eliminar matricula' && userType === 'Profesor'; else elseBlock" button (click)="showOptionsAdminAlumno(adminList)">
+      <ion-title>
+        <ion-label class="labelAdminAlumnoItem">{{adminList.title}}</ion-label>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button class="iconAdminAlumnoItem">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    <ng-template #elseBlock>
+      <ion-item *ngIf="userType === 'ProfAdmin' || userType === 'Administrativo'" button (click)="showOptionsAdminAlumno(adminList)">
+        <ion-title>
+          <ion-label class="labelAdminAlumnoItem">{{adminList.title}}</ion-label>
+        </ion-title>
+        <ion-buttons slot="end">
+          <ion-button class="iconAdminAlumnoItem">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ng-template>
+  </ion-list>
+</ion-content>

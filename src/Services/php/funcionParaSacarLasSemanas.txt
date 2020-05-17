@@ -1,0 +1,15 @@
+function getFirstLastDayOfWeek(userDate) {
+	
+  let result = {};
+
+  var curr = new Date(userDate); // get current date
+  var first = curr.getDate() - curr.getDay()+1; // First day is the day of the month - the day of the week
+  var last = first + 4; // last day is the first day + 6
+  
+  result = {
+		firstDay:new Date(curr.setDate(first)).toUTCString(),
+    lastDay:new Date(curr.setDate(last)).toUTCString()
+  };
+  
+  return result;
+};

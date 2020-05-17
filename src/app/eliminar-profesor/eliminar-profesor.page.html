@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> Eliminar profesor </ion-title>
+    <ion-back-button defaultHref="/admin-profesor" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label>Profesor</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getId($event)" [(ngModel)]="usuario">
+      <ion-select-option *ngFor="let usu of usuarios" value="{{usu.id}}">{{usu.NombreUsuario}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-button expand="block" class="iconDeleteProfesor" color="danger" (click)="deleteProfesor()">
+    <ion-icon name="trash-outline"></ion-icon>
+  </ion-button>
+</ion-content>

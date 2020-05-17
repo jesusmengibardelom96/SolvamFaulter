@@ -1,20 +1,109 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="titleFloat">
+      Horarios y sesiones
     </ion-title>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <!-- Pasar lista -->
+  <ion-list>
+    <ng-container *ngFor="let a of asignaturas">
+      <ion-item class="items"  *ngIf="a.ProfesorId === idUsu && (profTipo === 'Profesor' || profTipo === 'ProfAdmin')">
+        <ion-title class="asigTitle">{{a.NombreAsig}}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="showAlumnos(a.NombreAsig)" color="primary">
+            <ion-icon src="./assets/clipboard-list-solid.svg"></ion-icon>
+          </ion-button>
+          <ion-button (click)="showAlumnosFaltas(a.NombreAsig)" color="danger">
+            <ion-icon src="./assets/filter-solid.svg"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+      <ng-container *ngIf="comp === true && a.NombreAsig === nombAsig && comp2 === false">
+        <ion-item>
+          <ion-datetime [(ngModel)]="today" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Horas</ion-label>
+          <ion-select [(ngModel)]="hours" okText="Ok" cancelText="Cancelar">
+            <ion-select-option value="1">1</ion-select-option>
+            <ion-select-option value="2">2</ion-select-option>
+            <ion-select-option value="3">3</ion-select-option>
+            <ion-select-option value="4">4</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item *ngFor="let m of matriculados">
+          <ion-label class="alumno">{{m.Apellido1}}, {{m.Nombre}}</ion-label>
+          <ion-checkbox class="checkboxLeft" (click)="selectAlumno(m)" slot="start"></ion-checkbox>
+        </ion-item>
+        <ion-button color="success" (click)="saveFaltasAlumnos()" class="sendButton" expand="block">
+          <ion-icon src="./assets/paper-plane-solid.svg"></ion-icon>
+        </ion-button>
+      </ng-container>
+      <ng-container *ngIf="comp === true && a.NombreAsig === nombAsig && comp2 === true">
+        <ion-item>
+          <ion-title>
+            No hay alumnos
+          </ion-title>
+        </ion-item>
+      </ng-container>
+
+      <!-- Pasar filtro -->
+      <ng-container *ngIf="compFiltro === true && a.NombreAsig === nombAsig && compAlumnos === false">
+        <ion-item>
+          <ion-label>Fecha inicio: </ion-label>
+          <ion-datetime [(ngModel)]="today" (change)="fechaIniComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fecha fin: </ion-label>
+          <ion-datetime [(ngModel)]="today2" (change)="fechaFinComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"></ion-datetime>
+        </ion-item>
+
+        <ion-button color="success" (click)="sendQueryFaltas()" class="sendButton" expand="block">
+          <ion-icon name="search-circle-outline" size="large"></ion-icon>
+        </ion-button>
+
+        <ion-item *ngFor="let af of alumnosFaltas">
+          <ion-label>{{af.Apellido1}}, {{af.Nombre}}-{{af.HorasFaltadas}}-{{af.fecha}}</ion-label>
+          <ion-checkbox class="checkboxLeft" (click)="selectAlumno2(af)" slot="start"></ion-checkbox>
+        </ion-item>
+        <ng-container *ngIf="compDelete">
+          <ion-button color="danger" (click)="iscompDelete()" expand="block" class="sendButton">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="compFiltro === true && a.NombreAsig === nombAsig && compAlumnos === true">
+        <ion-item>
+          <ion-label>Fecha inicio: </ion-label>
+          <ion-datetime [(ngModel)]="today" (change)="fechaIniComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fecha fin: </ion-label>
+          <ion-datetime [(ngModel)]="today2" (change)="fechaFinComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre"></ion-datetime>
+        </ion-item>
+
+        <ion-button color="success" (click)="sendQueryFaltas()" class="sendButton" expand="block">
+          <ion-icon name="search-circle-outline" size="large"></ion-icon>
+        </ion-button>
+        <ion-item>
+          <ion-title>
+            No hay alumnos
+          </ion-title>
+        </ion-item>
+      </ng-container>
+    </ng-container>
+  </ion-list>
 </ion-content>

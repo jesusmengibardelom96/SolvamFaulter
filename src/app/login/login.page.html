@@ -1,0 +1,19 @@
+<ion-content class="ion-padding">
+  <ion-item class="itemMargin" color="primary">
+    <ion-label position="floating">Usuario</ion-label>
+    <ion-input [(ngModel)]="user"></ion-input>
+  </ion-item>
+  <ion-item class="itemSeparate" color="primary">
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input [(ngModel)]="pass" type="{{inputType}}"></ion-input>
+    <ion-buttons slot="end">
+      <ion-button (click)="seePassField()" >
+        <ion-icon name="{{iconName}}"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+  <ion-button color="success" class="buttonLogin" expand="block" (click)="goIntoApp()">
+    Entrar
+  </ion-button>
+  <ion-img src="./assets/logo-solvam.jpg"></ion-img>
+</ion-content>

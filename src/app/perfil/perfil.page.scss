@@ -1,0 +1,44 @@
+//formulario de edicion de usuario
+
+
+.edicionCampos{
+    margin-top: 3%;
+    margin-left: 5%;
+}
+
+.buttonAcceptChanges{
+    margin-left: 30%;
+}
+//fin formulario de edicion de usuario
+
+//items de administracion
+
+//administracion de alumno
+.adminAlumnosItem{
+    margin-top: 5%;
+}
+.iconAdminAlumnoItem{
+    float:left;
+}
+.labelAdminAlumnoItem{
+    float: left;
+    margin-top: 0.8%;
+    margin-right: 5%;
+    font-size: smaller;
+}
+//inicio subir csv
+.iconAdminAlumnoCSVItem{
+    float:left;
+}
+.iconAdminAlumnoCSVSaveItem{
+    width:100%;
+}
+//fin subir csv
+
+//fin de administracion de alumno
+
+//fin de items de administracion
+
+.itemFixed{
+    width:100% !important;
+}

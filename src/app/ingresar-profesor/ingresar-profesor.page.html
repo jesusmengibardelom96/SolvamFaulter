@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Ingresar nuevo profesor</ion-title>
+    <ion-back-button defaultHref="/admin-profesor" slot="start"></ion-back-button>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item color="{{inputColorName}}">
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input type="text" [(ngModel)]="userName" (ionChange)="getComp($event)" ></ion-input>
+  </ion-item>
+  <ion-item *ngIf="comp" color="{{inputColorPass}}">
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input type="{{inputType}}" [(ngModel)]="password" (ionChange)="getComp2($event)"></ion-input>
+    <ion-buttons slot="end">
+      <ion-button (click)="seePassField()">
+        <ion-icon name="{{iconName}}"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+  <ion-item *ngIf="comp && password !== ''" color="{{inputColorPass2}}">
+    <ion-label position="floating">Repita Contraseña</ion-label>
+    <ion-input type="{{inputType2}}" [(ngModel)]="password2" (ionChange)="getComp3($event)"></ion-input>
+    <ion-buttons slot="end">
+      <ion-button (click)="seePassField2()">
+        <ion-icon name="{{iconName2}}"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+  <ion-item *ngIf="comp2">
+    <ion-label>Tipo</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getTipo($event)" [(ngModel)]="profTipo">
+      <ion-select-option value="Profesor">Profesor</ion-select-option>
+      <ion-select-option value="ProfAdmin">ProfAdmin</ion-select-option>
+      <ion-select-option value="Administrativo">Administrativo</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="comp3">
+    <ion-label>¿Es tutor?</ion-label>
+    <ion-checkbox slot="end" [(ngModel)]="comp4"></ion-checkbox>
+  </ion-item>
+  <ion-item *ngIf="comp4">
+    <ion-label>Curso</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getCurso($event)" [(ngModel)]="profCurso">
+      <ion-select-option *ngFor="let cur of cursos" value="{{cur.Nombre}}">{{cur.NombreSolvam}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+  <ng-container *ngIf="comp5">
+    <ion-button expand="block" class="iconIngresarProfesor" color="success" (click)="ingresarProfesor()">
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+    </ion-button>
+  </ng-container>
+</ion-content>

@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="userType === 'ProfAdmin' || userType  === 'Profesor'">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Perfil
+    </ion-title>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="showNavOption()" *ngIf="userType === 'Administrativo'">
+        Ir a
+      </ion-button>
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="userType === 'Administrativo' && comp">
+    <ion-item slot="fixed" class="itemFixed">
+      <ion-button slot="end" (click)="goToMensajes()">
+        Ir Mensajes
+      </ion-button>
+      <ion-button slot="end" (click)="goToMensajesEnviados()">
+        Ir Mensajes Enviados
+      </ion-button>
+    </ion-item>
+  </ng-container>
+  <!-- Inicio formulario edicion usuario -->
+  <ng-container *ngIf="ableEdit; else elseBlock">
+    <ng-container class="formulario">
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input type="text" [(ngModel)]="userName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="{{inputType}}" [(ngModel)]="password"></ion-input>
+        <ion-buttons slot="end">
+          <ion-button (click)="seePassField()">
+            <ion-icon name="{{iconName}}"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+      <ion-item *ngIf="password !== ''">
+        <ion-label position="floating">Repita Contraseña</ion-label>
+        <ion-input type="{{inputType2}}" [(ngModel)]="password2"></ion-input>
+        <ion-buttons slot="end">
+          <ion-button (click)="seePassField2()">
+            <ion-icon name="{{iconName2}}"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </ng-container>
+    <ng-container class="edicionCampos">
+      <a (click)="enableFields()">Deshabilitar edicion</a>
+      <ion-button class="buttonAcceptChanges" color="success" (click)="presentChangeAlert()">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ng-container>
+  </ng-container>
+  <ng-template #elseBlock>
+    <ng-container class="formulario">
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input type="text" disabled [(ngModel)]="userName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input type="password" disabled [(ngModel)]="password"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="password !== ''">
+        <ion-label position="floating">Repita Contraseña</ion-label>
+        <ion-input type="password" disabled [(ngModel)]="password2"></ion-input>
+      </ion-item>
+    </ng-container>
+    <ng-container class="edicionCampos">
+      <a (click)="enableFields()">Editar campos</a>
+    </ng-container>
+  </ng-template>
+  <!-- Fin formulario edicion usuario -->
+  <!-- Inicio administracion -->
+  <ng-container>
+    <ion-item class="adminAlumnosItem" button (click)="showOptionsAdminAlumno()">
+      <ion-title>
+        <ion-label class="labelAdminAlumnoItem"> Administrar alumnos </ion-label>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button class="iconAdminAlumnoItem">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    <ion-item class="adminAlumnosItem" *ngIf="userType === 'ProfAdmin' || userType === 'Administrativo'" button (click)="showOptionsAdminProf()">
+      <ion-title>
+        <ion-label class="labelAdminAlumnoItem"> Administrar profesores </ion-label>
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button class="iconAdminAlumnoItem">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ng-container>
+  <!-- Fin administracion-->
+</ion-content>

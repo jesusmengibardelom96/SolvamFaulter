@@ -1,0 +1,11 @@
+SELECT 
+ Alumno.Nombre, 
+ Alumno.Apellido, 
+ Matricula.HorasFaltadas, 
+ Asignaturas.Curso 
+FROM 
+ Alumno 
+ INNER JOIN Matricula ON Matricula.Id_Alumno = Alumno.id 
+ INNER JOIN Asignaturas ON Matricula.Id_Asignatura = Asignaturas.id 
+WHERE 
+ Asignaturas.NombreAsig = "BBDD"

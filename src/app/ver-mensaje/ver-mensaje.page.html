@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="mensajes" slot="start"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Mensajes
+    </ion-title>
+    <ion-buttons slot="end" color="danger">
+      <ion-button (click)="closeSession()" color="danger">
+        <ion-icon name="exit-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{fecha}}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-textarea value="{{textMess}}"></ion-textarea>
+      </ion-card-content>
+      <ion-item>
+        <ion-button slot="end" (click)="sendMailP()" *ngIf="compMailP"><ion-icon name="mail-outline"></ion-icon>padre</ion-button>
+        <ion-button slot="end" (click)="sendMailM()" *ngIf="compMailM"><ion-icon name="mail-outline"></ion-icon>madre</ion-button>
+        <ion-button slot="end" (click)="sendMailA()" *ngIf="compMailA"><ion-icon name="mail-outline"></ion-icon>alu.</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-button slot="end" (click)="sendWhatsP()" color="success" *ngIf="compTlfP"><ion-icon name="logo-whatsapp"></ion-icon>padre</ion-button>
+        <ion-button slot="end" (click)="sendWhatsM()" color="success" *ngIf="compTlfM"><ion-icon name="logo-whatsapp"></ion-icon>madre</ion-button>
+        <ion-button slot="end" (click)="sendWhatsA()" color="success" *ngIf="compTlfA"><ion-icon name="logo-whatsapp"></ion-icon>alu.</ion-button>
+      </ion-item>
+    </ion-card>
+  </ng-container>
+</ion-content>
