@@ -22,7 +22,7 @@ export class AdminAlumnoPage implements OnInit {
   }
 
   showOptionsAdminAlumno(adminList){
-    if(adminList.title === "Subir CSV alumnos"){
+    if(adminList.title === "Insertar alumnos"){
       this.route.navigate(['/csv-alumno', { userType: this.userType }]);
     }else if(adminList.title === "Eliminar matricula"){
       this.route.navigate(['/eliminar-matricula', { userType: this.userType }]);
