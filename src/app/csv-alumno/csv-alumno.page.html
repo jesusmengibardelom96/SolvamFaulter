@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Subir csv alumnos</ion-title>
+    <ion-title>Insertar alumnos</ion-title>
     <ion-back-button defaultHref="/admin-alumno" slot="start"></ion-back-button>
     <ion-buttons slot="end" color="danger">
       <ion-button (click)="closeSession()" color="danger">
@@ -12,10 +12,8 @@
 
 <ion-content>
   <ion-item>
-    <ion-title>
       <ion-label class="labelAdminAlumnoItem"><input type="file" (change)="changeListener($event)"
           [(ngModel)]="valueInptuFileCsv"></ion-label>
-    </ion-title>
   </ion-item>
   <ion-item>
     <ion-label>Cursos</ion-label>
@@ -25,6 +23,60 @@
   </ion-item>
   <ion-button class="iconAdminAlumnoCSVSaveItem" (click)="csvInsertAlumnos()" color="success" expand="block">
     <ion-icon name="cloud-upload-outline" (click)="csvInsertAlumnos()" size="small"></ion-icon>
+  </ion-button>
+
+  <ion-item class="itemSeparador">
+    <ion-label class="centeredO">O</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">NIA</ion-label>
+    <ion-input type="number" [(ngModel)]="nia"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Nombre</ion-label>
+    <ion-input type="text" [(ngModel)]="nombreAlumno"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Apellido1</ion-label>
+    <ion-input type="text" [(ngModel)]="apellidoAlumno1"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Apellido2</ion-label>
+    <ion-input type="text" [(ngModel)]="apellidoAlumno2"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label>Cursos</ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getCurso2($event)" [(ngModel)]="curso2">
+      <ion-select-option *ngFor="let cur of cursos" value="{{cur.Nombre}}">{{cur.NombreSolvam}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Telefono alumno</ion-label>
+    <ion-input type="number" [(ngModel)]="tlfAlumno"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Telefono padre</ion-label>
+    <ion-input type="number" [(ngModel)]="tlfPadre"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Telefono madre</ion-label>
+    <ion-input type="number" [(ngModel)]="tlfMadre"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Correo alumno</ion-label>
+    <ion-input type="text" [(ngModel)]="mailAlumno"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Correo padre</ion-label>
+    <ion-input type="text" [(ngModel)]="mailPadre"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Correo madre</ion-label>
+    <ion-input type="text" [(ngModel)]="mailMadre"></ion-input>
+  </ion-item>
+  <ion-button class="iconAdminAlumnoCSVSaveItem" (click)="InsertAlumno()" color="success" expand="block">
+    <ion-icon name="cloud-upload-outline"></ion-icon>
   </ion-button>
 
 </ion-content>

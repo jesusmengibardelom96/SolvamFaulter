@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class AdminAlumnoPage implements OnInit {
   //Variables para componentes
-  adminAlumnosList:any[] = [{title: "Subir CSV alumnos"}, {title:"Eliminar matricula"}, {title:"Eliminar Alumno"}];
+  adminAlumnosList:any[] = [{title: "Insertar alumnos"}, {title:"Eliminar matricula"}, {title:"Eliminar Alumno"}];
   titles:string = "";
 
   //Variable usertype

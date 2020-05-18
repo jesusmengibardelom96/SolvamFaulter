@@ -39,6 +39,17 @@ export class CsvAlumnoPage implements OnInit {
   alumno: any;
   curso: any;
   asignatura: any;
+  curso2:any;
+  nia: number;
+  nombreAlumno: string;
+  apellidoAlumno1: string;
+  apellidoAlumno2: string;
+  tlfAlumno:number;
+  tlfPadre:number;
+  tlfMadre:number;
+  mailAlumno:string;
+  mailPadre:string;
+  mailMadre:string;
 
   //Variable error
   error: any;
@@ -80,6 +91,16 @@ export class CsvAlumnoPage implements OnInit {
   }
 
   getCurso($event) {
+    this.asigService.refillAsignaturasCurso($event.detail.value);
+    setTimeout(() => {
+
+      this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
+      this.asigService.clearStorageAsig();
+      console.log(this.asignaturas);
+    }, 500);
+  }
+
+  getCurso2($event) {
     this.asigService.refillAsignaturasCurso($event.detail.value);
     setTimeout(() => {
 
@@ -192,8 +213,64 @@ export class CsvAlumnoPage implements OnInit {
     if (msg === "csvSuccess") {
       this.presentLoading("csvSuccess");
     }
-    else this.presentLoading2();
+    else this.presentLoading2(msg);
     //this.presentLoading("csvSuccess", update);
+  }
+
+  InsertAlumno(){
+    let msg = "";
+    let cont = 1;
+    if(this.nia === undefined || this.nia === 0){
+      msg = "Error";
+    }else {
+      if(this.nombreAlumno === "" || this.nombreAlumno === undefined)msg = "Error";
+      else{
+        if(this.apellidoAlumno1 === "" || this.apellidoAlumno1 === undefined)msg = "Error";
+        else{
+          if(this.apellidoAlumno2 === "" || this.apellidoAlumno2 === undefined)msg = "Error";
+          else{
+            if(this.curso2 === undefined)msg = "Error";
+            else{
+              for (let j of this.asignaturas) {
+                let jsonAlumnos = {
+                  NIA: this.nia,
+                  Nombre: this.nombreAlumno,
+                  Apellido1: this.apellidoAlumno1,
+                  Apellido2: this.apellidoAlumno2,
+                  Grupo: this.curso2,
+                  TlfA: this.tlfAlumno,
+                  TlfM: this.tlfMadre,
+                  TlfP: this.tlfPadre,
+                  CorreoA: this.mailAlumno,
+                  CorreoM: this.mailMadre,
+                  CorreoP: this.mailPadre,
+                  Asignatura: parseInt(j.id),
+                  Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
+                }
+                if (jsonAlumnos.Grupo !== j.Curso) {
+                  msg = "courseError";
+                } else {
+                  if(isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
+                  if(isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
+                  if(isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
+                  if(this.mailAlumno === undefined)this.mailAlumno = "";
+                  if(this.mailMadre === undefined)this.mailMadre = "";
+                  if(this.mailPadre === undefined)this.mailPadre = "";
+                  console.log(jsonAlumnos);
+                  this.csvService.uploadMatricula(jsonAlumnos);
+                  this.csvService.upload(jsonAlumnos);
+                  msg = "csvSuccess";
+                }
+                ++cont;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (msg === "csvSuccess") {
+      this.presentLoading("csvSuccess");
+    }else this.presentLoading2(msg);
   }
 
   //Alerta para cuando se desee guardar los cambios en el formulario
@@ -243,7 +320,7 @@ export class CsvAlumnoPage implements OnInit {
   }
 
   //Loader para subir alumnos
-  async presentLoading2() {
+  async presentLoading2(msg) {
 
     const loading = await this.loaderCtrl.create({
       message: 'Subiendo estudiantes, por favor espere...',
@@ -256,7 +333,7 @@ export class CsvAlumnoPage implements OnInit {
     this.tmpPath = "";
     this.typeOfFile = "";
     this.curso = null;
-    this.showToast("courseError");
+    this.showToast(msg);
     console.log('Loading dismissed!');
   }
 
@@ -308,6 +385,13 @@ export class CsvAlumnoPage implements OnInit {
     } else if (type === "matriculaError") {
       toast = await this.toast.create({
         message: "Los alumnos ya estan matriculados",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    } else if (type === "Error") {
+      toast = await this.toast.create({
+        message: "Revise los campos del formulario",
         duration: 3000,
         position: 'bottom',
         color: 'danger'
