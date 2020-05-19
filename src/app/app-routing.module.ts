@@ -56,6 +56,10 @@ const routes: Routes = [
     path: 'mensajes-enviados',
     loadChildren: () => import('./mensajes-enviados/mensajes-enviados.module').then( m => m.MensajesEnviadosPageModule)
   },
+  {
+    path: 'insertar-alumno',
+    loadChildren: () => import('./insertar-alumno/insertar-alumno.module').then( m => m.InsertarAlumnoPageModule)
+  },
 ];
 
 @NgModule({

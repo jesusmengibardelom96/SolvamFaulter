@@ -39,22 +39,11 @@ export class CsvAlumnoPage implements OnInit {
   alumno: any;
   curso: any;
   asignatura: any;
-  curso2:any;
-  nia: number;
-  nombreAlumno: string;
-  apellidoAlumno1: string;
-  apellidoAlumno2: string;
-  tlfAlumno:number;
-  tlfPadre:number;
-  tlfMadre:number;
-  mailAlumno:string;
-  mailPadre:string;
-  mailMadre:string;
+
 
   //Variable error
   error: any;
-
-  userType:any;
+  userType: any;
 
   constructor(
     private alertController: AlertController,
@@ -66,7 +55,7 @@ export class CsvAlumnoPage implements OnInit {
     private asigService: AsignaturasService,
     private matService: AlumnoMatriculaService,
     private http: HttpClient,
-    private route : Router
+    private route: Router
   ) { }
 
   ngOnInit() {
@@ -100,15 +89,7 @@ export class CsvAlumnoPage implements OnInit {
     }, 500);
   }
 
-  getCurso2($event) {
-    this.asigService.refillAsignaturasCurso($event.detail.value);
-    setTimeout(() => {
 
-      this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
-      this.asigService.clearStorageAsig();
-      console.log(this.asignaturas);
-    }, 500);
-  }
 
   //Recoge el path del fichero y el tipo del fichero
   changeListener($event) {
@@ -152,126 +133,100 @@ export class CsvAlumnoPage implements OnInit {
     });
     console.log(this.headerRow);
     console.log(this.csvData);
-    console.log(parseInt(this.matriculas[this.matriculas.length - 1].Id) + 1);
     for (let i = 0; i < this.csvData.length; i++) {
+      if ((this.csvData[i][4] + "") !== this.curso) msg = "courseError";
+      else {
+        //console.log(parseInt(this.matriculas[this.matriculas.length - 1].Id) + 1);
+        let jsonAlumnos = {
+          NIA: parseInt(this.csvData[i][0]),
+        }
 
-      //console.log(parseInt(this.matriculas[this.matriculas.length - 1].Id) + 1);
-      let jsonAlumnos = {
-        NIA: parseInt(this.csvData[i][0]),
+        //console.log(jsonAlumnos);
+        let jsonMat = {
+          alumnoId: jsonAlumnos.NIA
+        }
+        this.matService.deleteMatAlumno(jsonMat);
       }
-
-      //console.log(jsonAlumnos);
-      let jsonMat = {
-        alumnoId: jsonAlumnos.NIA
-      }
-      this.matService.deleteMatAlumno(jsonMat);
-
     }
     this.matService.setStorageMat();
     setTimeout(() => {
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
       //console.log(this.matriculas);
       this.matService.clearStorageMat();
-    }, 500);
-
-    for (let i = 0; i < this.csvData.length; i++) {
-      for (let j of this.asignaturas) {
-        //console.log(parseInt(this.matriculas[this.matriculas.length - 1].Id) + 1);
-        /*this.matService.setStorageMat();
-        this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-        console.log(this.matriculas);*/
-
-        let jsonAlumnos = {
-          NIA: parseInt(this.csvData[i][0]),
-          Nombre: this.csvData[i][1] + "",
-          Apellido1: this.csvData[i][2] + "",
-          Apellido2: this.csvData[i][3] + "",
-          Grupo: this.csvData[i][4] + "",
-          TlfA: parseInt(this.csvData[i][5]),
-          TlfM: parseInt(this.csvData[i][6]),
-          TlfP: parseInt(this.csvData[i][7]),
-          CorreoA: this.csvData[i][8] + "",
-          CorreoM: this.csvData[i][9] + "",
-          CorreoP: this.csvData[i][10] + "",
-          Asignatura: parseInt(j.id),
-          Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
-        }
-        if (jsonAlumnos.Grupo !== j.Curso) {
-          msg = "courseError";
-        } else {
-          if(isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
-          if(isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
-          if(isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
-          console.log(jsonAlumnos);
-          this.csvService.uploadMatricula(jsonAlumnos);
-          this.csvService.upload(jsonAlumnos);
-          msg = "csvSuccess";
-        }
-        ++cont;
-      }
-    }
-    if (msg === "csvSuccess") {
-      this.presentLoading("csvSuccess");
-    }
-    else this.presentLoading2(msg);
-    //this.presentLoading("csvSuccess", update);
-  }
-
-  InsertAlumno(){
-    let msg = "";
-    let cont = 1;
-    if(this.nia === undefined || this.nia === 0){
-      msg = "Error";
-    }else {
-      if(this.nombreAlumno === "" || this.nombreAlumno === undefined)msg = "Error";
-      else{
-        if(this.apellidoAlumno1 === "" || this.apellidoAlumno1 === undefined)msg = "Error";
-        else{
-          if(this.apellidoAlumno2 === "" || this.apellidoAlumno2 === undefined)msg = "Error";
-          else{
-            if(this.curso2 === undefined)msg = "Error";
-            else{
-              for (let j of this.asignaturas) {
+      setTimeout(() => {
+        for (let i = 0; i < this.csvData.length; i++) {
+          if ((this.csvData[i][4] + "") !== this.curso) {
+            msg = "courseError";
+            console.log(msg);
+          } else {
+            for (let j of this.asignaturas) {
+              if (this.matriculas.length === 0) {
                 let jsonAlumnos = {
-                  NIA: this.nia,
-                  Nombre: this.nombreAlumno,
-                  Apellido1: this.apellidoAlumno1,
-                  Apellido2: this.apellidoAlumno2,
-                  Grupo: this.curso2,
-                  TlfA: this.tlfAlumno,
-                  TlfM: this.tlfMadre,
-                  TlfP: this.tlfPadre,
-                  CorreoA: this.mailAlumno,
-                  CorreoM: this.mailMadre,
-                  CorreoP: this.mailPadre,
+                  NIA: parseInt(this.csvData[i][0]),
+                  Nombre: this.csvData[i][1] + "",
+                  Apellido1: this.csvData[i][2] + "",
+                  Apellido2: this.csvData[i][3] + "",
+                  Grupo: this.csvData[i][4] + "",
+                  TlfA: parseInt(this.csvData[i][5]),
+                  TlfM: parseInt(this.csvData[i][6]),
+                  TlfP: parseInt(this.csvData[i][7]),
+                  CorreoA: this.csvData[i][8] + "",
+                  CorreoM: this.csvData[i][9] + "",
+                  CorreoP: this.csvData[i][10] + "",
+                  Asignatura: parseInt(j.id),
+                  Matricula: cont
+                }
+
+                if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
+                if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
+                if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
+                console.log(jsonAlumnos);
+                this.csvService.uploadMatricula(jsonAlumnos);
+                this.csvService.upload(jsonAlumnos);
+                msg = "csvSuccess";
+
+                ++cont;
+
+              } else {
+                let jsonAlumnos = {
+                  NIA: parseInt(this.csvData[i][0]),
+                  Nombre: this.csvData[i][1] + "",
+                  Apellido1: this.csvData[i][2] + "",
+                  Apellido2: this.csvData[i][3] + "",
+                  Grupo: this.csvData[i][4] + "",
+                  TlfA: parseInt(this.csvData[i][5]),
+                  TlfM: parseInt(this.csvData[i][6]),
+                  TlfP: parseInt(this.csvData[i][7]),
+                  CorreoA: this.csvData[i][8] + "",
+                  CorreoM: this.csvData[i][9] + "",
+                  CorreoP: this.csvData[i][10] + "",
                   Asignatura: parseInt(j.id),
                   Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
                 }
-                if (jsonAlumnos.Grupo !== j.Curso) {
-                  msg = "courseError";
-                } else {
-                  if(isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
-                  if(isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
-                  if(isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
-                  if(this.mailAlumno === undefined)this.mailAlumno = "";
-                  if(this.mailMadre === undefined)this.mailMadre = "";
-                  if(this.mailPadre === undefined)this.mailPadre = "";
-                  console.log(jsonAlumnos);
-                  this.csvService.uploadMatricula(jsonAlumnos);
-                  this.csvService.upload(jsonAlumnos);
-                  msg = "csvSuccess";
-                }
+
+                if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
+                if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
+                if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
+                console.log(jsonAlumnos);
+                this.csvService.uploadMatricula(jsonAlumnos);
+                this.csvService.upload(jsonAlumnos);
+                msg = "csvSuccess";
+
                 ++cont;
+
               }
             }
           }
+
         }
-      }
-    }
-    if (msg === "csvSuccess") {
-      this.presentLoading("csvSuccess");
-    }else this.presentLoading2(msg);
+        if (msg === "csvSuccess") {
+          this.presentLoading("csvSuccess");
+        } else this.presentLoading2(msg);
+      }, 500);
+    }, 500);
   }
+
+
 
   //Alerta para cuando se desee guardar los cambios en el formulario
   async presentChangeAlert() {
@@ -304,7 +259,7 @@ export class CsvAlumnoPage implements OnInit {
 
     const loading = await this.loaderCtrl.create({
       message: 'Subiendo estudiantes, por favor espere...',
-      duration: 2000
+      duration: 5000
     });
     await loading.present();
 
@@ -400,7 +355,7 @@ export class CsvAlumnoPage implements OnInit {
     toast.present();
   }
 
-  closeSession(){
+  closeSession() {
     this.route.navigateByUrl("/login");
     sessionStorage.removeItem("User");
   }

@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class AdminAlumnoPage implements OnInit {
   //Variables para componentes
-  adminAlumnosList:any[] = [{title: "Insertar alumnos"}, {title:"Eliminar matricula"}, {title:"Eliminar Alumno"}];
+  adminAlumnosList:any[] = [{title: "Subir csv alumnos"}, {title:"Eliminar matricula"}, {title:"Eliminar Alumno"}, {title:"Insertar Alumno"}];
   titles:string = "";
 
   //Variable usertype
@@ -22,12 +22,14 @@ export class AdminAlumnoPage implements OnInit {
   }
 
   showOptionsAdminAlumno(adminList){
-    if(adminList.title === "Insertar alumnos"){
+    if(adminList.title === "Subir csv alumnos"){
       this.route.navigate(['/csv-alumno', { userType: this.userType }]);
     }else if(adminList.title === "Eliminar matricula"){
       this.route.navigate(['/eliminar-matricula', { userType: this.userType }]);
     }else if(adminList.title === "Eliminar Alumno"){
       this.route.navigate(['/eliminar-alumno', { userType: this.userType }]);
+    }else if(adminList.title === "Insertar Alumno"){
+      this.route.navigate(['/insertar-alumno', { userType: this.userType }]);
     }
   }
 
