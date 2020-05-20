@@ -69,7 +69,7 @@ export class CsvAlumnoPage implements OnInit {
       this.alumnos = JSON.parse(localStorage.getItem("Alumnos"));
       this.cursos = JSON.parse(localStorage.getItem("Cursos"));
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-      
+
       this.aluService.clearStorageAlumnos();
       this.aluService.clearStorageCurso();
       this.matService.clearStorageMat();
@@ -135,24 +135,26 @@ export class CsvAlumnoPage implements OnInit {
       if ((this.csvData[i][4] + "") !== this.curso) msg = "courseError";
       else {
         //console.log(parseInt(this.matriculas[this.matriculas.length - 1].Id) + 1);
-        let jsonAlumnos = {
-          NIA: parseInt(this.csvData[i][0]),
+        for (let j of this.asignaturas) {
+          let jsonAlumnos = {
+            NIA: parseInt(this.csvData[i][0]),
+          }
+          //console.log(jsonAlumnos);
+          let jsonMat = {
+            alumnoId: jsonAlumnos.NIA
+          }
+          this.matService.deleteMatAlumno(jsonMat);
         }
-
-        //console.log(jsonAlumnos);
-        let jsonMat = {
-          alumnoId: jsonAlumnos.NIA
-        }
-        this.matService.deleteMatAlumno(jsonMat);
       }
     }
     this.matService.setStorageMat();
     setTimeout(() => {
+      this.matriculas = [];
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-      //console.log(this.matriculas);
+      console.log(this.matriculas);
       this.matService.clearStorageMat();
     }, 500);
-    
+
     for (let i = 0; i < this.csvData.length; i++) {
       if ((this.csvData[i][4] + "") !== this.curso) {
         msg = "courseError";
@@ -183,7 +185,7 @@ export class CsvAlumnoPage implements OnInit {
               Matricula: cont
             }
             this.csvService.uploadMatricula(jsonAlumnos);
-            
+
             msg = "csvSuccess";
 
             ++cont;
@@ -200,12 +202,12 @@ export class CsvAlumnoPage implements OnInit {
             ++cont;
 
           }
-          
+
         }
       }
       contAlumno++;
     }
-    if(msg === "csvSuccess") this.presentLoading("csvSuccess");
+    if (msg === "csvSuccess") this.presentLoading("csvSuccess");
     else this.presentLoading2(msg);
   }
 
@@ -238,14 +240,14 @@ export class CsvAlumnoPage implements OnInit {
   }
 
   //Loader para subir alumnos
-  async presentLoading(type:any) {
+  async presentLoading(type: any) {
 
     const loading = await this.loaderCtrl.create({
       message: 'Subiendo estudiantes, por favor espere...',
       duration: 2000
     });
     await loading.present();
-    
+
     const { role, data } = await loading.onDidDismiss();
     this.valueInptuFileCsv = null;
     this.tmpPath = "";

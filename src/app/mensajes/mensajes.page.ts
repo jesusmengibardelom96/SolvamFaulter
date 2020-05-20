@@ -14,8 +14,8 @@ import { UsauriosService } from 'src/Services/usaurios.service';
   styleUrls: ['./mensajes.page.scss'],
 })
 export class MensajesPage implements OnInit {
-  user:any;
-  userType:any;
+  user: any;
+  userType: any;
   today: any;
   edit: boolean = false;
   messages: any;
@@ -23,7 +23,7 @@ export class MensajesPage implements OnInit {
   usuarios: any;
   asignaturas: any;
   messages2: any = [];
-  comp:boolean = false;
+  comp: boolean = false;
 
   constructor(private menu: MenuController,
     private messService: MessagesService,
@@ -39,6 +39,7 @@ export class MensajesPage implements OnInit {
   ) { }
 
   ionViewWillEnter() {
+    this.messages2 = [];
     this.user = JSON.parse(sessionStorage.getItem("User"));
     this.userType = this.user.type;
     this.matService.setStorageMat();
@@ -55,34 +56,35 @@ export class MensajesPage implements OnInit {
       this.messService.clearStorageMess();
       this.usuService.clearStorageUsu();
       this.asigService.clearStorageAsig();
+      if (this.messages.length !== 0) {
+        for (let m of this.messages) {
+          m.fecha = this.parseDate(m.fecha);
+        }
 
-      for (let m of this.messages) {
-        m.fecha = this.parseDate(m.fecha);
-      }
 
-
-      for (let m of this.messages) {
-        for (let a of this.asignaturas) {
-          if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
-            console.log("Entro 1");
-            if (a.id === m.idAsig) {
-              console.log("Entro 2");
-              let json = {
-                fecha: m.fecha,
-                textoMensaje: m.textoMensaje,
-                idAlumno : m.idAlumno,
-                MensajeId: m.MensajeId,
-                idAsig: m.idAsig,
-                HorasFaltadas: m.HorasFaltadas
+        for (let m of this.messages) {
+          for (let a of this.asignaturas) {
+            if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
+              console.log("Entro 1");
+              if (a.id === m.idAsig) {
+                console.log("Entro 2");
+                let json = {
+                  fecha: m.fecha,
+                  textoMensaje: m.textoMensaje,
+                  idAlumno: m.idAlumno,
+                  MensajeId: m.MensajeId,
+                  idAsig: m.idAsig,
+                  HorasFaltadas: m.HorasFaltadas
+                }
+                this.messages2.push(json);
               }
-              this.messages2.push(json);
+            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
+              this.messages2 = this.messages;
             }
-          }else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
-            this.messages2 = this.messages;
           }
         }
+        console.log(this.messages2);
       }
-      console.log(this.messages2);
     }, 500);
 
 
@@ -168,6 +170,7 @@ export class MensajesPage implements OnInit {
     });
     await loading.present();
 
+    this.messages2 = [];
     this.matService.setStorageMat();
     this.messService.refillMessagesNoEnv();
     this.asigService.refillAsignaturas();
@@ -182,34 +185,35 @@ export class MensajesPage implements OnInit {
       this.messService.clearStorageMess();
       this.usuService.clearStorageUsu();
       this.asigService.clearStorageAsig();
+      if (this.messages.length !== 0) {
+        for (let m of this.messages) {
+          m.fecha = this.parseDate(m.fecha);
+        }
 
-      for (let m of this.messages) {
-        m.fecha = this.parseDate(m.fecha);
-      }
 
-
-      for (let m of this.messages) {
-        for (let a of this.asignaturas) {
-          if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
-            console.log("Entro 1");
-            if (a.id === m.idAsig) {
-              console.log("Entro 2");
-              let json = {
-                fecha: m.fecha,
-                textoMensaje: m.textoMensaje,
-                idAlumno : m.idAlumno,
-                MensajeId: m.MensajeId,
-                idAsig: m.idAsig,
-                HorasFaltadas: m.HorasFaltadas
+        for (let m of this.messages) {
+          for (let a of this.asignaturas) {
+            if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
+              console.log("Entro 1");
+              if (a.id === m.idAsig) {
+                console.log("Entro 2");
+                let json = {
+                  fecha: m.fecha,
+                  textoMensaje: m.textoMensaje,
+                  idAlumno: m.idAlumno,
+                  MensajeId: m.MensajeId,
+                  idAsig: m.idAsig,
+                  HorasFaltadas: m.HorasFaltadas
+                }
+                this.messages2.push(json);
               }
-              this.messages2.push(json);
+            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
+              this.messages2 = this.messages;
             }
-          }else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
-            this.messages2 = this.messages;
           }
         }
+        console.log(this.messages2);
       }
-      console.log(this.messages2);
     }, 500);
     const { role, data } = await loading.onDidDismiss();
     this.presentToast();
@@ -238,22 +242,22 @@ export class MensajesPage implements OnInit {
     this.menu.open('first');
   }
 
-  showNavOption(){
-    if(!this.comp) this.comp = true;
+  showNavOption() {
+    if (!this.comp) this.comp = true;
     else this.comp = false;
   }
 
-  goToMensajesEnviados(){
+  goToMensajesEnviados() {
     this.router.navigateByUrl("/mensajes-enviados");
     this.comp = false;
   }
 
-  goToPerfil(){
+  goToPerfil() {
     this.router.navigateByUrl("/perfil");
     this.comp = false;
   }
 
-  closeSession(){
+  closeSession() {
     this.router.navigateByUrl("/login");
     sessionStorage.removeItem("User");
   }

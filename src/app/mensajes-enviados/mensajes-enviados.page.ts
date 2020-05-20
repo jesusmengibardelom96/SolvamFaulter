@@ -13,34 +13,35 @@ import { AsignaturasService } from 'src/Services/asignaturas.service';
   styleUrls: ['./mensajes-enviados.page.scss'],
 })
 export class MensajesEnviadosPage implements OnInit {
-  userType:any;
-  user:any;
+  userType: any;
+  user: any;
   asignaturas: any;
-  edit:boolean = false;
-  messages:any;
+  edit: boolean = false;
+  messages: any;
   matriculados: any;
   messages2: any = [];
-  comp:boolean = false;
+  comp: boolean = false;
 
   constructor(private menu: MenuController,
-      private messService: MessagesService,
-      private delFalta: DeleteFaltasService,
-      private matService: AlumnoMatriculaService,
-      private faltasService: InsertarFaltasService,
-      private loadingController: LoadingController,
-      private asigService: AsignaturasService,
-      private alertController: AlertController,
-      private toastController: ToastController,
-      private router: Router
-    ) { }
-  
-  ionViewWillEnter(){
+    private messService: MessagesService,
+    private delFalta: DeleteFaltasService,
+    private matService: AlumnoMatriculaService,
+    private faltasService: InsertarFaltasService,
+    private loadingController: LoadingController,
+    private asigService: AsignaturasService,
+    private alertController: AlertController,
+    private toastController: ToastController,
+    private router: Router
+  ) { }
+
+  ionViewWillEnter() {
+    this.messages2 = [];
     this.user = JSON.parse(sessionStorage.getItem("User"));
     this.userType = this.user.type;
     this.matService.setStorageMat();
     this.asigService.refillAsignaturas();
     this.messService.refillMessagesEnv();
-    setTimeout(()=>{
+    setTimeout(() => {
       this.messages = JSON.parse(localStorage.getItem("Mensajes"));
       this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
       this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
@@ -48,41 +49,44 @@ export class MensajesEnviadosPage implements OnInit {
       this.asigService.clearStorageAsig();
       this.matService.clearStorageMat();
       this.messService.clearStorageMess();
+      if (this.messages.length !== 0) {
+        for (let m of this.messages) {
+          m.fecha = this.parseDate(m.fecha);
+        }
 
-      for(let m of this.messages){
-        m.fecha = this.parseDate(m.fecha);
-      }
-
-      for (let m of this.messages) {
-        for (let a of this.asignaturas) {
-          console.log((this.user.type === "ProfAdmin" ||  this.user.type === "Administrativo"));
-          if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
-            if (a.id === m.idAsig) {
-              let json = {
-                fecha: m.fecha,
-                textoMensaje: m.textoMensaje,
-                idAlumno : m.idAlumno,
-                MensajeId: m.MensajeId
+        for (let m of this.messages) {
+          for (let a of this.asignaturas) {
+            console.log((this.user.type === "ProfAdmin" || this.user.type === "Administrativo"));
+            if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
+              if (a.id === m.idAsig) {
+                let json = {
+                  fecha: m.fecha,
+                  textoMensaje: m.textoMensaje,
+                  idAlumno: m.idAlumno,
+                  MensajeId: m.MensajeId
+                }
+                this.messages2.push(json);
               }
-              this.messages2.push(json);
+            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
+              this.messages2 = this.messages;
             }
-          }else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
-            this.messages2 = this.messages;
           }
         }
       }
-    },500);
+
+    }, 500);
   }
-  
+
   ngOnInit() {
-    
+
   }
 
-  recoverMessage(m){
-    this.messService.sendMessage({idMess: m.MensajeId});
+  recoverMessage(m) {
+    this.messService.recoverMessage({ idMess: m.MensajeId });
+    this.presentLoading();
   }
 
-  deleteMessage(mess){
+  deleteMessage(mess) {
     this.presentAlertConfirm(mess);
   }
 
@@ -118,10 +122,10 @@ export class MensajesEnviadosPage implements OnInit {
           text: 'Ok',
           handler: () => {
             console.log('Confirm Okay');
-            for(let i of this.matriculados){
-              if(i.Id_Alumno === mess.idAlumno && i.Id_Asignatura === mess.idAsig){
-                console.log("Mensaje Eliminado " + (parseInt(i.HorasFaltadasTotales)-parseInt(mess.HorasFaltadas)));
-                let horasResta = parseInt(i.HorasFaltadasTotales)-parseInt(mess.HorasFaltadas);
+            for (let i of this.matriculados) {
+              if (i.Id_Alumno === mess.idAlumno && i.Id_Asignatura === mess.idAsig) {
+                console.log("Mensaje Eliminado " + (parseInt(i.HorasFaltadasTotales) - parseInt(mess.HorasFaltadas)));
+                let horasResta = parseInt(i.HorasFaltadasTotales) - parseInt(mess.HorasFaltadas);
                 let json = {
                   horasTotales: horasResta,
                   idAlumno: mess.idAlumno,
@@ -129,7 +133,7 @@ export class MensajesEnviadosPage implements OnInit {
                 }
                 this.faltasService.insertFaltas(json);
                 console.log(mess.MensajeId);
-                this.delFalta.deleteFaltas({MensajeId: mess.MensajeId});
+                this.delFalta.deleteFaltas({ MensajeId: mess.MensajeId });
                 break;
               }
             }
@@ -150,10 +154,64 @@ export class MensajesEnviadosPage implements OnInit {
     });
     await loading.present();
 
+    this.messages2 = [];
     this.matService.setStorageMat();
     this.asigService.refillAsignaturas();
     this.messService.refillMessagesEnv();
-    setTimeout(()=>{
+    setTimeout(() => {
+      this.messages = JSON.parse(localStorage.getItem("Mensajes"));
+      this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
+      this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
+
+      this.asigService.clearStorageAsig();
+      this.matService.clearStorageMat();
+      this.messService.clearStorageMess();
+      if (this.messages.length !== 0) {
+        for (let m of this.messages) {
+          m.fecha = this.parseDate(m.fecha);
+        }
+
+        for (let m of this.messages) {
+          for (let a of this.asignaturas) {
+            console.log((this.user.type === "ProfAdmin" || this.user.type === "Administrativo"));
+            if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
+              if (a.id === m.idAsig) {
+                let json = {
+                  fecha: m.fecha,
+                  textoMensaje: m.textoMensaje,
+                  idAlumno: m.idAlumno,
+                  MensajeId: m.MensajeId
+                }
+                this.messages2.push(json);
+              }
+            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
+              this.messages2 = this.messages;
+            }
+          }
+        }
+      }
+
+    }, 500);
+    const { role, data } = await loading.onDidDismiss();
+    this.presentToast();
+  }
+
+  //Loader para subir alumnos
+  async presentLoading() {
+
+    const loading = await this.loadingController.create({
+      message: 'Recuperando mensaje, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+    
+    this.messages2 = [];
+    this.user = JSON.parse(sessionStorage.getItem("User"));
+    this.userType = this.user.type;
+    this.matService.setStorageMat();
+    this.asigService.refillAsignaturas();
+    this.messService.refillMessagesEnv();
+    setTimeout(() => {
       this.messages = JSON.parse(localStorage.getItem("Mensajes"));
       this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
       this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
@@ -162,36 +220,50 @@ export class MensajesEnviadosPage implements OnInit {
       this.matService.clearStorageMat();
       this.messService.clearStorageMess();
 
-      for(let m of this.messages){
-        m.fecha = this.parseDate(m.fecha);
-      }
+      if (this.messages.length !== 0) {
+        for (let m of this.messages) {
+          m.fecha = this.parseDate(m.fecha);
+        }
 
-      for (let m of this.messages) {
-        for (let a of this.asignaturas) {
-          console.log((this.user.type === "ProfAdmin" ||  this.user.type === "Administrativo"));
-          if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
-            if (a.id === m.idAsig) {
-              let json = {
-                fecha: m.fecha,
-                textoMensaje: m.textoMensaje,
-                idAlumno : m.idAlumno,
-                MensajeId: m.MensajeId
+        for (let m of this.messages) {
+          for (let a of this.asignaturas) {
+            console.log((this.user.type === "ProfAdmin" || this.user.type === "Administrativo"));
+            if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
+              if (a.id === m.idAsig) {
+                let json = {
+                  fecha: m.fecha,
+                  textoMensaje: m.textoMensaje,
+                  idAlumno: m.idAlumno,
+                  MensajeId: m.MensajeId
+                }
+                this.messages2.push(json);
               }
-              this.messages2.push(json);
+            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
+              this.messages2 = this.messages;
             }
-          }else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
-            this.messages2 = this.messages;
           }
         }
       }
-    },500);
+    }, 500);
+    console.log(this.messages2);
+    
     const { role, data } = await loading.onDidDismiss();
-    this.presentToast();
+    console.log('Loading dismissed!');
+    this.presentToastRecover();
   }
 
   async presentToast() {
     const toast = await this.toastController.create({
       message: 'Este mensaje fue eliminado.',
+      duration: 2000,
+      color: "success"
+    });
+    toast.present();
+  }
+
+  async presentToastRecover() {
+    const toast = await this.toastController.create({
+      message: 'Este mensaje fue recuperado y enviado a mensajes.',
       duration: 2000,
       color: "success"
     });
@@ -212,22 +284,22 @@ export class MensajesEnviadosPage implements OnInit {
     this.menu.open('first');
   }
 
-  showNavOption(){
-    if(!this.comp) this.comp = true;
+  showNavOption() {
+    if (!this.comp) this.comp = true;
     else this.comp = false;
   }
 
-  goToMensajes(){
+  goToMensajes() {
     this.router.navigateByUrl("/mensajes");
     this.comp = false;
   }
 
-  goToPerfil(){
+  goToPerfil() {
     this.router.navigateByUrl("/perfil");
     this.comp = false;
   }
 
-  closeSession(){
+  closeSession() {
     this.router.navigateByUrl("/login");
     sessionStorage.removeItem("User");
   }
