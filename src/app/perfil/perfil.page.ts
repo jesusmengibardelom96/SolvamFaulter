@@ -172,6 +172,7 @@ export class PerfilPage implements OnInit {
       pass: this.password,
       opc: opc
     }
+    console.log(json);
     this.userService.updateUsuario(json);
     const { role, data } = await loading.onDidDismiss();
     this.presentToast();
@@ -223,7 +224,7 @@ export class PerfilPage implements OnInit {
 
   async presentCancelToast() {
     const toast = await this.toastCtrl.create({
-      message: 'La edicion se cancelo.',
+      message: 'La edicion se canceló.',
       duration: 2000,
       color: "success"
     });

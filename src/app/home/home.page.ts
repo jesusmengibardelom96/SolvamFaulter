@@ -98,7 +98,7 @@ export class HomePage {
     this.alumnoService.refillAlumnos();
     this.asigService.refillAsignaturas();
     this.asigService.refillMessages();
-
+    this.presentLoading3();
     setTimeout(() => {
       this.alumnos = JSON.parse(localStorage.getItem("Alumnos"));
       this.alumnoService.clearStorageAlumnos();
@@ -531,7 +531,17 @@ export class HomePage {
 
   }
   //Fin comprobaciones
+  async presentLoading3() {
 
+    const loading = await this.loadingController.create({
+      message: 'Cargando datos, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
+  }
   closeSession(){
     this.route.navigateByUrl("/login");
     sessionStorage.removeItem("User");

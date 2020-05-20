@@ -41,6 +41,7 @@ export class MensajesEnviadosPage implements OnInit {
     this.matService.setStorageMat();
     this.asigService.refillAsignaturas();
     this.messService.refillMessagesEnv();
+    this.presentLoading3();
     setTimeout(() => {
       this.messages = JSON.parse(localStorage.getItem("Mensajes"));
       this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
@@ -297,6 +298,18 @@ export class MensajesEnviadosPage implements OnInit {
   goToPerfil() {
     this.router.navigateByUrl("/perfil");
     this.comp = false;
+  }
+
+  async presentLoading3() {
+
+    const loading = await this.loadingController.create({
+      message: 'Cargando datos, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
   }
 
   closeSession() {

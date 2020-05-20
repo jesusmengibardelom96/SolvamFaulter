@@ -47,17 +47,17 @@ export class InsertarAlumnoPage implements OnInit {
     this.aluService.refillAlumnos();
     this.aluService.refillCurso();
     this.matService.setStorageMat();
-
+    this.presentLoading3();
     setTimeout(() => {
       this.alumnos = JSON.parse(localStorage.getItem("Alumnos"));
       this.cursos = JSON.parse(localStorage.getItem("Cursos"));
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-
+      console.log(this.matriculas);
       this.aluService.clearStorageAlumnos();
       this.aluService.clearStorageCurso();
       this.matService.clearStorageMat();
 
-    }, 500);
+    }, 2000);
   }
 
   getCurso2($event) {
@@ -245,6 +245,18 @@ export class InsertarAlumnoPage implements OnInit {
       });
     }
     toast.present();
+  }
+
+  async presentLoading3() {
+
+    const loading = await this.loaderCtrl.create({
+      message: 'Cargando datos, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
   }
 
   closeSession() {

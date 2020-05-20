@@ -7,7 +7,6 @@
     
     
     $consulta = $conexion -> query("INSERT INTO Matricula (Id, Id_alumno, Id_Asignatura, HorasFaltadasTotales)
-        VALUES ($request->Matricula ,$request->NIA, $request->Asignatura, 0);");
-    
+        VALUES ($request->Matricula ,$request->NIA, $request->Asignatura, 0)");
     
 ?>

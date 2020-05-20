@@ -24,7 +24,7 @@ export class UploadCSVService {
     .subscribe((res: Response) => {
       
     }, (err)=>{
-      console.log("Error!");
+      
     });
   }
   

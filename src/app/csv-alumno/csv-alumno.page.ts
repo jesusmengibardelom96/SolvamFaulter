@@ -64,17 +64,17 @@ export class CsvAlumnoPage implements OnInit {
     this.aluService.refillAlumnos();
     this.aluService.refillCurso();
     this.matService.setStorageMat();
-
+    this.presentLoading3();
     setTimeout(() => {
       this.alumnos = JSON.parse(localStorage.getItem("Alumnos"));
       this.cursos = JSON.parse(localStorage.getItem("Cursos"));
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-
+      
       this.aluService.clearStorageAlumnos();
       this.aluService.clearStorageCurso();
       this.matService.clearStorageMat();
 
-    }, 500);
+    }, 2000);
   }
 
   getCurso($event) {
@@ -131,34 +131,11 @@ export class CsvAlumnoPage implements OnInit {
         this.csvData = parsedData.data;
       }
     });
-    for (let i = 0; i < this.csvData.length; i++) {
-      if ((this.csvData[i][4] + "") !== this.curso) msg = "courseError";
-      else {
-        //console.log(parseInt(this.matriculas[this.matriculas.length - 1].Id) + 1);
-        for (let j of this.asignaturas) {
-          let jsonAlumnos = {
-            NIA: parseInt(this.csvData[i][0]),
-          }
-          //console.log(jsonAlumnos);
-          let jsonMat = {
-            alumnoId: jsonAlumnos.NIA
-          }
-          this.matService.deleteMatAlumno(jsonMat);
-        }
-      }
-    }
-    this.matService.setStorageMat();
-    setTimeout(() => {
-      this.matriculas = [];
-      this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-      console.log(this.matriculas);
-      this.matService.clearStorageMat();
-    }, 500);
-
+    
     for (let i = 0; i < this.csvData.length; i++) {
       if ((this.csvData[i][4] + "") !== this.curso) {
         msg = "courseError";
-        console.log(msg);
+        
       } else {
         jsonAlumnos = {
           NIA: parseInt(this.csvData[i][0]),
@@ -176,39 +153,43 @@ export class CsvAlumnoPage implements OnInit {
         if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
         if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
         if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
+        
         this.csvService.upload(jsonAlumnos);
-        for (let j of this.asignaturas) {
-          if (this.matriculas.length === 0) {
-            jsonAlumnos = {
-              NIA: parseInt(this.csvData[i][0]),
-              Asignatura: parseInt(j.id),
-              Matricula: cont
+        msg = "csvSuccess";
+        setTimeout(()=>{
+          for (let j of this.asignaturas) {
+            if (this.matriculas.length === 0) {
+              jsonAlumnos = {
+                NIA: parseInt(this.csvData[i][0]),
+                Asignatura: parseInt(j.id),
+                Matricula: cont
+              }
+              
+              this.csvService.uploadMatricula(jsonAlumnos);
+  
+              ++cont;
+  
+            } else {
+              jsonAlumnos = {
+                NIA: parseInt(this.csvData[i][0]),
+                Asignatura: parseInt(j.id),
+                Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
+              }
+              
+              this.csvService.uploadMatricula(jsonAlumnos);
+  
+              ++cont;
+  
             }
-            this.csvService.uploadMatricula(jsonAlumnos);
-
-            msg = "csvSuccess";
-
-            ++cont;
-
-          } else {
-            jsonAlumnos = {
-              NIA: parseInt(this.csvData[i][0]),
-              Asignatura: parseInt(j.id),
-              Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
-            }
-            this.csvService.uploadMatricula(jsonAlumnos);
-            msg = "csvSuccess";
-
-            ++cont;
-
+  
           }
-
-        }
+        }, 1000);
       }
       contAlumno++;
     }
     if (msg === "csvSuccess") this.presentLoading("csvSuccess");
     else this.presentLoading2(msg);
+    
   }
 
 
@@ -274,6 +255,18 @@ export class CsvAlumnoPage implements OnInit {
     this.typeOfFile = "";
     this.curso = null;
     this.showToast(msg);
+    console.log('Loading dismissed!');
+  }
+
+  async presentLoading3() {
+
+    const loading = await this.loaderCtrl.create({
+      message: 'Cargando datos, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
     console.log('Loading dismissed!');
   }
 

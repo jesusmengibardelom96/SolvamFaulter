@@ -46,6 +46,7 @@ export class MensajesPage implements OnInit {
     this.messService.refillMessagesNoEnv();
     this.asigService.refillAsignaturas();
     this.usuService.refillUsuarios();
+    this.presentLoading3();
     setTimeout(() => {
       this.usuarios = JSON.parse(localStorage.getItem("Usuarios"));
       this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
@@ -255,6 +256,18 @@ export class MensajesPage implements OnInit {
   goToPerfil() {
     this.router.navigateByUrl("/perfil");
     this.comp = false;
+  }
+
+  async presentLoading3() {
+
+    const loading = await this.loadingController.create({
+      message: 'Cargando datos, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
   }
 
   closeSession() {
