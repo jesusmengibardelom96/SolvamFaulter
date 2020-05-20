@@ -78,9 +78,8 @@ export class MensajesEnviadosPage implements OnInit {
     
   }
 
-  editMessages(){
-    if(this.edit === false) this.edit = true;
-    else this.edit = false
+  recoverMessage(m){
+    this.messService.sendMessage({idMess: m.MensajeId});
   }
 
   deleteMessage(mess){

@@ -69,9 +69,7 @@ export class CsvAlumnoPage implements OnInit {
       this.alumnos = JSON.parse(localStorage.getItem("Alumnos"));
       this.cursos = JSON.parse(localStorage.getItem("Cursos"));
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
-
-      console.log(this.alumnos);
-      console.log(this.matriculas);
+      
       this.aluService.clearStorageAlumnos();
       this.aluService.clearStorageCurso();
       this.matService.clearStorageMat();
@@ -124,6 +122,8 @@ export class CsvAlumnoPage implements OnInit {
     let msg = "";
     let csvData = res || '';
     let cont = 1;
+    let contAlumno = 1;
+    let jsonAlumnos;
 
     this.papa.parse(csvData, {
       complete: parsedData => {
@@ -131,8 +131,6 @@ export class CsvAlumnoPage implements OnInit {
         this.csvData = parsedData.data;
       }
     });
-    console.log(this.headerRow);
-    console.log(this.csvData);
     for (let i = 0; i < this.csvData.length; i++) {
       if ((this.csvData[i][4] + "") !== this.curso) msg = "courseError";
       else {
@@ -153,77 +151,62 @@ export class CsvAlumnoPage implements OnInit {
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
       //console.log(this.matriculas);
       this.matService.clearStorageMat();
-      setTimeout(() => {
-        for (let i = 0; i < this.csvData.length; i++) {
-          if ((this.csvData[i][4] + "") !== this.curso) {
-            msg = "courseError";
-            console.log(msg);
-          } else {
-            for (let j of this.asignaturas) {
-              if (this.matriculas.length === 0) {
-                let jsonAlumnos = {
-                  NIA: parseInt(this.csvData[i][0]),
-                  Nombre: this.csvData[i][1] + "",
-                  Apellido1: this.csvData[i][2] + "",
-                  Apellido2: this.csvData[i][3] + "",
-                  Grupo: this.csvData[i][4] + "",
-                  TlfA: parseInt(this.csvData[i][5]),
-                  TlfM: parseInt(this.csvData[i][6]),
-                  TlfP: parseInt(this.csvData[i][7]),
-                  CorreoA: this.csvData[i][8] + "",
-                  CorreoM: this.csvData[i][9] + "",
-                  CorreoP: this.csvData[i][10] + "",
-                  Asignatura: parseInt(j.id),
-                  Matricula: cont
-                }
-
-                if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
-                if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
-                if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
-                console.log(jsonAlumnos);
-                this.csvService.uploadMatricula(jsonAlumnos);
-                this.csvService.upload(jsonAlumnos);
-                msg = "csvSuccess";
-
-                ++cont;
-
-              } else {
-                let jsonAlumnos = {
-                  NIA: parseInt(this.csvData[i][0]),
-                  Nombre: this.csvData[i][1] + "",
-                  Apellido1: this.csvData[i][2] + "",
-                  Apellido2: this.csvData[i][3] + "",
-                  Grupo: this.csvData[i][4] + "",
-                  TlfA: parseInt(this.csvData[i][5]),
-                  TlfM: parseInt(this.csvData[i][6]),
-                  TlfP: parseInt(this.csvData[i][7]),
-                  CorreoA: this.csvData[i][8] + "",
-                  CorreoM: this.csvData[i][9] + "",
-                  CorreoP: this.csvData[i][10] + "",
-                  Asignatura: parseInt(j.id),
-                  Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
-                }
-
-                if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
-                if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
-                if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
-                console.log(jsonAlumnos);
-                this.csvService.uploadMatricula(jsonAlumnos);
-                this.csvService.upload(jsonAlumnos);
-                msg = "csvSuccess";
-
-                ++cont;
-
-              }
-            }
-          }
-
-        }
-        if (msg === "csvSuccess") {
-          this.presentLoading("csvSuccess");
-        } else this.presentLoading2(msg);
-      }, 500);
     }, 500);
+    
+    for (let i = 0; i < this.csvData.length; i++) {
+      if ((this.csvData[i][4] + "") !== this.curso) {
+        msg = "courseError";
+        console.log(msg);
+      } else {
+        jsonAlumnos = {
+          NIA: parseInt(this.csvData[i][0]),
+          Nombre: this.csvData[i][1] + "",
+          Apellido1: this.csvData[i][2] + "",
+          Apellido2: this.csvData[i][3] + "",
+          Grupo: this.csvData[i][4] + "",
+          TlfA: parseInt(this.csvData[i][5]),
+          TlfM: parseInt(this.csvData[i][6]),
+          TlfP: parseInt(this.csvData[i][7]),
+          CorreoA: this.csvData[i][8] + "",
+          CorreoM: this.csvData[i][9] + "",
+          CorreoP: this.csvData[i][10] + ""
+        }
+        if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
+        if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
+        if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
+        this.csvService.upload(jsonAlumnos);
+        for (let j of this.asignaturas) {
+          if (this.matriculas.length === 0) {
+            jsonAlumnos = {
+              NIA: parseInt(this.csvData[i][0]),
+              Asignatura: parseInt(j.id),
+              Matricula: cont
+            }
+            this.csvService.uploadMatricula(jsonAlumnos);
+            
+            msg = "csvSuccess";
+
+            ++cont;
+
+          } else {
+            jsonAlumnos = {
+              NIA: parseInt(this.csvData[i][0]),
+              Asignatura: parseInt(j.id),
+              Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
+            }
+            this.csvService.uploadMatricula(jsonAlumnos);
+            msg = "csvSuccess";
+
+            ++cont;
+
+          }
+          
+        }
+      }
+      contAlumno++;
+    }
+    if(msg === "csvSuccess") this.presentLoading("csvSuccess");
+    else this.presentLoading2(msg);
   }
 
 
@@ -255,14 +238,14 @@ export class CsvAlumnoPage implements OnInit {
   }
 
   //Loader para subir alumnos
-  async presentLoading(type: any) {
+  async presentLoading(type:any) {
 
     const loading = await this.loaderCtrl.create({
       message: 'Subiendo estudiantes, por favor espere...',
-      duration: 5000
+      duration: 2000
     });
     await loading.present();
-
+    
     const { role, data } = await loading.onDidDismiss();
     this.valueInptuFileCsv = null;
     this.tmpPath = "";

@@ -53,8 +53,6 @@ export class InsertarAlumnoPage implements OnInit {
       this.cursos = JSON.parse(localStorage.getItem("Cursos"));
       this.matriculas = JSON.parse(localStorage.getItem("Matriculados"));
 
-      console.log(this.alumnos);
-      console.log(this.matriculas);
       this.aluService.clearStorageAlumnos();
       this.aluService.clearStorageCurso();
       this.matService.clearStorageMat();
@@ -68,7 +66,6 @@ export class InsertarAlumnoPage implements OnInit {
 
       this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
       this.asigService.clearStorageAsig();
-      console.log(this.asignaturas);
     }, 500);
   }
 
@@ -78,75 +75,60 @@ export class InsertarAlumnoPage implements OnInit {
     if (this.nia === undefined || this.nia === 0) {
       msg = "Error";
     } else {
-      if (this.nombreAlumno === "" || this.nombreAlumno === undefined) msg = "Error";
+      if (this.nombreAlumno === "" || this.nombreAlumno === undefined) msg = "nameError";
       else {
-        if (this.apellidoAlumno1 === "" || this.apellidoAlumno1 === undefined) msg = "Error";
+        if (this.apellidoAlumno1 === "" || this.apellidoAlumno1 === undefined) msg = "surname1Error";
         else {
-          if (this.apellidoAlumno2 === "" || this.apellidoAlumno2 === undefined) msg = "Error";
+          if (this.apellidoAlumno2 === "" || this.apellidoAlumno2 === undefined) msg = "surname2Error";
           else {
-            if (this.curso2 === undefined) msg = "Error";
+            if (this.curso2 === undefined) msg = "courseError";
             else {
-              for (let j of this.asignaturas) {
-
-                if (this.matriculas.length === 0) {
-                  let jsonAlumnos = {
-                    NIA: this.nia,
-                    Nombre: this.nombreAlumno,
-                    Apellido1: this.apellidoAlumno1,
-                    Apellido2: this.apellidoAlumno2,
-                    Grupo: this.curso2,
-                    TlfA: this.tlfAlumno,
-                    TlfM: this.tlfMadre,
-                    TlfP: this.tlfPadre,
-                    CorreoA: this.mailAlumno,
-                    CorreoM: this.mailMadre,
-                    CorreoP: this.mailPadre,
-                    Asignatura: parseInt(j.id),
-                    Matricula: cont
-                  }
-
-                  if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
-                  if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
-                  if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
-                  if (this.mailAlumno === undefined) this.mailAlumno = "";
-                  if (this.mailMadre === undefined) this.mailMadre = "";
-                  if (this.mailPadre === undefined) this.mailPadre = "";
-                  console.log(jsonAlumnos);
-                  this.csvService.uploadMatricula(jsonAlumnos);
-                  this.csvService.upload(jsonAlumnos);
-                  msg = "success";
-                  ++cont;
-                } else {
-                  let jsonAlumnos = {
-                    NIA: this.nia,
-                    Nombre: this.nombreAlumno,
-                    Apellido1: this.apellidoAlumno1,
-                    Apellido2: this.apellidoAlumno2,
-                    Grupo: this.curso2,
-                    TlfA: this.tlfAlumno,
-                    TlfM: this.tlfMadre,
-                    TlfP: this.tlfPadre,
-                    CorreoA: this.mailAlumno,
-                    CorreoM: this.mailMadre,
-                    CorreoP: this.mailPadre,
-                    Asignatura: parseInt(j.id),
-                    Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
-                  }
-
-                  if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
-                  if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
-                  if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
-                  if (this.mailAlumno === undefined) this.mailAlumno = "";
-                  if (this.mailMadre === undefined) this.mailMadre = "";
-                  if (this.mailPadre === undefined) this.mailPadre = "";
-                  console.log(jsonAlumnos);
-                  this.csvService.uploadMatricula(jsonAlumnos);
-                  this.csvService.upload(jsonAlumnos);
-                  msg = "success";
-
-                  ++cont;
+              if (isNaN(this.tlfAlumno) && isNaN(this.tlfPadre) && isNaN(this.tlfMadre) || this.mailAlumno === undefined && this.mailPadre === undefined && this.mailMadre === undefined) msg = "mailOrTlfError";
+              else {
+                let jsonAlumnos = {
+                  NIA: this.nia,
+                  Nombre: this.nombreAlumno,
+                  Apellido1: this.apellidoAlumno1,
+                  Apellido2: this.apellidoAlumno2,
+                  Grupo: this.curso2,
+                  TlfA: this.tlfAlumno,
+                  TlfM: this.tlfMadre,
+                  TlfP: this.tlfPadre,
+                  CorreoA: this.mailAlumno,
+                  CorreoM: this.mailMadre,
+                  CorreoP: this.mailPadre
                 }
+                if (isNaN(jsonAlumnos.TlfA)) jsonAlumnos.TlfA = 0;
+                if (isNaN(jsonAlumnos.TlfM)) jsonAlumnos.TlfM = 0;
+                if (isNaN(jsonAlumnos.TlfP)) jsonAlumnos.TlfP = 0;
+                if (this.mailAlumno === undefined) this.mailAlumno = "";
+                if (this.mailMadre === undefined) this.mailMadre = "";
+                if (this.mailPadre === undefined) this.mailPadre = "";
+                this.csvService.upload(jsonAlumnos);
+                for (let j of this.asignaturas) {
 
+                  if (this.matriculas.length === 0) {
+                    let jsonAlumnos = {
+                      NIA: this.nia,
+                      Asignatura: parseInt(j.id),
+                      Matricula: cont
+                    }
+                    this.csvService.uploadMatricula(jsonAlumnos);
+                    msg = "success";
+                    ++cont;
+                  } else {
+                    let jsonAlumnos = {
+                      NIA: this.nia,
+                      Asignatura: parseInt(j.id),
+                      Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
+                    }
+                    this.csvService.uploadMatricula(jsonAlumnos);
+                    msg = "success";
+
+                    ++cont;
+                  }
+
+                }
               }
             }
           }
@@ -219,9 +201,44 @@ export class InsertarAlumnoPage implements OnInit {
         position: 'bottom',
         color: 'success'
       });
-    } else if (type === "Error") {
+    } else if (type === "courseError") {
       toast = await this.toast.create({
-        message: "Revise los campos del formulario",
+        message: "Escoja un curso",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    } else if (type === "surname1Error") {
+      toast = await this.toast.create({
+        message: "El campo Apellido1 no puede estar vacio",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    }else if (type === "surname2Error") {
+      toast = await this.toast.create({
+        message: "El campo Apellido2 no puede estar vacio",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    }else if (type === "nameError") {
+      toast = await this.toast.create({
+        message: "El campo name no puede estar vacio",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    }else if (type === "mailOrTlfError") {
+      toast = await this.toast.create({
+        message: "Debe rellenar algun telefono y mail",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    }else if (type === "niaError") {
+      toast = await this.toast.create({
+        message: "El campo NIA del formulario debe contener numeros y no estar vacio",
         duration: 3000,
         position: 'bottom',
         color: 'danger'

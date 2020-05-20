@@ -34,6 +34,14 @@ export class MessagesService {
     });
   }
 
+  recoverMessage(json){
+    this.http.post('https://www.solvam.es/app/php/db_message_no_env.php',JSON.stringify(json), {observe: 'body'})
+    .subscribe((res: Response) => {
+    }, (err)=>{
+      console.log("Error!");
+    });
+  }
+
   clearStorageMess(){
     localStorage.removeItem("Mensajes");
   }
