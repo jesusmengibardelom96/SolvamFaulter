@@ -73,7 +73,7 @@ export class InsertarAlumnoPage implements OnInit {
     let msg = "";
     let cont = 1;
     if (this.nia === undefined || this.nia === 0) {
-      msg = "Error";
+      msg = "niaError";
     } else {
       if (this.nombreAlumno === "" || this.nombreAlumno === undefined) msg = "nameError";
       else {
@@ -105,6 +105,7 @@ export class InsertarAlumnoPage implements OnInit {
                 if (this.mailMadre === undefined) this.mailMadre = "";
                 if (this.mailPadre === undefined) this.mailPadre = "";
                 this.csvService.upload(jsonAlumnos);
+                msg = "success";
                 for (let j of this.asignaturas) {
 
                   if (this.matriculas.length === 0) {
@@ -114,7 +115,7 @@ export class InsertarAlumnoPage implements OnInit {
                       Matricula: cont
                     }
                     this.csvService.uploadMatricula(jsonAlumnos);
-                    msg = "success";
+                    
                     ++cont;
                   } else {
                     let jsonAlumnos = {
@@ -123,7 +124,6 @@ export class InsertarAlumnoPage implements OnInit {
                       Matricula: parseInt(this.matriculas[this.matriculas.length - 1].Id) + cont
                     }
                     this.csvService.uploadMatricula(jsonAlumnos);
-                    msg = "success";
 
                     ++cont;
                   }
@@ -177,23 +177,13 @@ export class InsertarAlumnoPage implements OnInit {
     await loading.present();
 
     const { role, data } = await loading.onDidDismiss();
-    this.curso2 = null;
-    this.nia = null;
-    this.nombreAlumno = null;
-    this.apellidoAlumno1 = null;
-    this.apellidoAlumno2 = null;
-    this.tlfAlumno = null;
-    this.tlfPadre = null;
-    this.tlfMadre = null;
-    this.mailAlumno = null;
-    this.mailPadre = null;
-    this.mailMadre = null;
     this.showToast(msg);
     console.log('Loading dismissed!');
   }
 
   async showToast(type: any) {
     let toast;
+    console.log(type);
     if (type === "success") {
       toast = await this.toast.create({
         message: "Alumno subido",

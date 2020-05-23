@@ -63,27 +63,35 @@ export class LoginPage implements OnInit {
     }
   }
   goIntoApp(){
-    for(let usu of this.users){
-      if(this.user === usu.NombreUsuario){
-        if(Md5.init(this.pass) === usu.Contrasenya){
-          this.userBBDD = this.user;
-          this.passBBDD = Md5.init(this.pass);
-          this.typeBBDD = usu.Tipo;
-          this.tutorBBDD = usu.Tutor;
-          this.idBBDD = usu.id;
-          break;
+    if(this.user === undefined && this.pass === undefined){
+      this.presentLoading2("usuPassError");
+    }else if(this.user === undefined){
+      this.presentLoading2("userError");
+    }else if(this.pass === undefined){
+      this.presentLoading2("passError");
+    }else{
+      for(let usu of this.users){
+        if(this.user === usu.NombreUsuario){
+          if(Md5.init(this.pass) === usu.Contrasenya){
+            this.userBBDD = this.user;
+            this.passBBDD = Md5.init(this.pass);
+            this.typeBBDD = usu.Tipo;
+            this.tutorBBDD = usu.Tutor;
+            this.idBBDD = usu.id;
+            break;
+          }else{
+            this.userBBDD = this.user;
+            this.passBBDD = "passError";
+            break;
+          }
         }else{
-          this.userBBDD = this.user;
-          this.passBBDD = "passError";
-          break;
+          this.userBBDD = "userError";
         }
-      }else{
-        this.userBBDD = "userError";
       }
+      if(this.userBBDD === this.user && this.passBBDD === Md5.init(this.pass)) this.presentLoading();
+      else if(this.userBBDD !== this.user) this.presentLoading2(this.userBBDD);
+      else if (this.userBBDD === this.user && this.passBBDD !== Md5.init(this.pass)) this.presentLoading2(this.passBBDD);
     }
-    if(this.userBBDD === this.user && this.passBBDD === Md5.init(this.pass)) this.presentLoading();
-    else if(this.userBBDD !== this.user) this.presentLoading2(this.userBBDD);
-    else if (this.userBBDD === this.user && this.passBBDD !== Md5.init(this.pass)) this.presentLoading2(this.passBBDD);
   }
 
   async presentLoading() {
@@ -113,12 +121,13 @@ export class LoginPage implements OnInit {
     const { role, data } = await loading.onDidDismiss();
     if(type == "userError") this.presentErrorToast2();
     else if(type == "passError") this.presentErrorToast();
+    else if(type == "usuPassError") this.presentErrorToast3();
     console.log('Loading dismissed!');
   }
 
   async presentToast() {
     const toast = await this.toast.create({
-      message: 'Bienvenido ' + this.userBBDD,
+      message: 'Bienvenido/a ' + this.userBBDD,
       duration: 2000,
       color: "primary"
     });
@@ -143,4 +152,12 @@ export class LoginPage implements OnInit {
     toast.present();
   }
 
+  async presentErrorToast3() {
+      const toast = await this.toast.create({
+        message: 'El usuario y la contraseña no son correctos',
+        duration: 2000,
+        color: "danger"
+      });
+      toast.present();
+    }
 }

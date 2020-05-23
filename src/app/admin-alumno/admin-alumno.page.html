@@ -24,9 +24,7 @@
     </ion-item>
     <ng-template #elseBlock>
       <ion-item *ngIf="userType === 'ProfAdmin' || userType === 'Administrativo'" button (click)="showOptionsAdminAlumno(adminList)">
-        <ion-title>
           <ion-label class="labelAdminAlumnoItem">{{adminList.title}}</ion-label>
-        </ion-title>
         <ion-buttons slot="end">
           <ion-button class="iconAdminAlumnoItem">
             <ion-icon name="chevron-forward-outline"></ion-icon>

@@ -23,7 +23,7 @@
     ON Matricula.Id_Alumno = Alumno.NIA
     JOIN Asignaturas
     ON Matricula.Id_Asignatura = Asignaturas.id
-    WHERE Asignaturas.NombreAsig = '$request->nombAsig' AND DATE(fecha) >= '$request->fechaInicio' AND DATE(fecha) <= '$request->fechaFin'");
+    WHERE Asignaturas.NombreAsig = '$request->nombAsig' AND DATE(fecha) >= '$request->fechaInicio' AND DATE(fecha) <= '$request->fechaFin' ORDER BY Alumno.Apellido1 ASC");
 
     $arrayMatricula = array();
     while($fila = mysqli_fetch_assoc($consulta)){

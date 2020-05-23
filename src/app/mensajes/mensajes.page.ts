@@ -17,6 +17,7 @@ export class MensajesPage implements OnInit {
   user: any;
   userType: any;
   today: any;
+  today2:any;
   edit: boolean = false;
   messages: any;
   matriculados: any;
@@ -24,6 +25,9 @@ export class MensajesPage implements OnInit {
   asignaturas: any;
   messages2: any = [];
   comp: boolean = false;
+  search: string = "";
+  comp2: boolean = false;
+  recoverMess: any;
 
   constructor(private menu: MenuController,
     private messService: MessagesService,
@@ -39,6 +43,79 @@ export class MensajesPage implements OnInit {
   ) { }
 
   ionViewWillEnter() {
+    this.rechargeArrayOFMessages();
+    
+    this.today = new Date().toISOString().substring(0, 10);
+    this.today2 = new Date().toISOString().substring(0, 10);
+  }
+
+  ngOnInit() {
+
+  }
+  filters() {
+    if (this.comp2) {
+      this.comp2 = false;
+    } else {
+      this.comp2 = true;
+    }
+  }
+
+  editMessages() {
+    if (this.edit === false) this.edit = true;
+    else this.edit = false
+  }
+
+  deleteMessage(mess) {
+    this.presentAlertConfirm(mess);
+  }
+
+  findMessage() {
+    this.resetArrayFindField();
+    let messagesFind = this.messages2;
+    this.messages2 = [];
+    console.log(this.search);
+
+    if (this.search === '') {
+      this.resetArrayFindField();
+    } else {
+      for (let m of messagesFind) {
+        if (m.textoMensaje.includes(this.search)) this.messages2.push(m);
+      }
+    }
+  }
+
+  findByFecha() {
+    this.resetArrayFindField();
+    let messagesFind = this.messages2;
+    this.messages2 = [];
+    let dateToday = this.parseDate(this.today);
+    
+    for (let m of messagesFind) {
+      if (m.fecha === dateToday) this.messages2.push(m);
+    }
+  }
+
+  resetArray() {
+    this.comp2 = false;
+    this.messages2 = [];
+    this.messages2 = this.recoverMess;
+    this.search = "";
+    this.today = new Date().toISOString().substring(0, 10);
+  }
+
+  deleteFilters() {
+    this.messages2 = [];
+    this.messages2 = this.recoverMess;
+    this.search = "";
+    this.today = new Date().toISOString().substring(0, 10);
+  }
+  
+  resetArrayFindField(){
+    this.messages2 = [];
+    this.messages2 = this.recoverMess;
+  }
+
+  private rechargeArrayOFMessages() {
     this.messages2 = [];
     this.user = JSON.parse(sessionStorage.getItem("User"));
     this.userType = this.user.type;
@@ -79,29 +156,16 @@ export class MensajesPage implements OnInit {
                 }
                 this.messages2.push(json);
               }
-            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
+            } else if (this.user.type === "ProfAdmin") {
               this.messages2 = this.messages;
             }
           }
         }
-        console.log(this.messages2);
+        
       }
-    }, 500);
-
-
-  }
-
-  ngOnInit() {
-
-  }
-
-  editMessages() {
-    if (this.edit === false) this.edit = true;
-    else this.edit = false
-  }
-
-  deleteMessage(mess) {
-    this.presentAlertConfirm(mess);
+      this.recoverMess = this.messages2;
+     
+    }, 1500);
   }
 
   //Agrega 0 en caso de que el dia u el mes no supere las 2 cifras
@@ -171,58 +235,28 @@ export class MensajesPage implements OnInit {
     });
     await loading.present();
 
-    this.messages2 = [];
-    this.matService.setStorageMat();
-    this.messService.refillMessagesNoEnv();
-    this.asigService.refillAsignaturas();
-    this.usuService.refillUsuarios();
-    setTimeout(() => {
-      this.usuarios = JSON.parse(localStorage.getItem("Usuarios"));
-      this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
-      this.messages = JSON.parse(localStorage.getItem("Mensajes"));
-      this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
-
-      this.matService.clearStorageMat();
-      this.messService.clearStorageMess();
-      this.usuService.clearStorageUsu();
-      this.asigService.clearStorageAsig();
-      if (this.messages.length !== 0) {
-        for (let m of this.messages) {
-          m.fecha = this.parseDate(m.fecha);
-        }
-
-
-        for (let m of this.messages) {
-          for (let a of this.asignaturas) {
-            if (a.ProfesorId === this.user.id && this.user.type === "Profesor") {
-              console.log("Entro 1");
-              if (a.id === m.idAsig) {
-                console.log("Entro 2");
-                let json = {
-                  fecha: m.fecha,
-                  textoMensaje: m.textoMensaje,
-                  idAlumno: m.idAlumno,
-                  MensajeId: m.MensajeId,
-                  idAsig: m.idAsig,
-                  HorasFaltadas: m.HorasFaltadas
-                }
-                this.messages2.push(json);
-              }
-            } else if (this.user.type === "ProfAdmin" || this.user.type === "Administrativo") {
-              this.messages2 = this.messages;
-            }
-          }
-        }
-        console.log(this.messages2);
-      }
-    }, 500);
+    this.rechargeArrayOFMessages();
     const { role, data } = await loading.onDidDismiss();
     this.presentToast();
   }
 
+  archivarMensaje(m) {
+    this.messService.sendMessage({ idMess: m.MensajeId });
+    this.presentLoading4();
+  }
+
   async presentToast() {
     const toast = await this.toastController.create({
-      message: 'Este mensaje fue eliminado.',
+      message: 'Este mensaje fue eliminado',
+      duration: 2000,
+      color: "success"
+    });
+    toast.present();
+  }
+
+  async presentArchiveToast() {
+    const toast = await this.toastController.create({
+      message: 'Este mensaje fue archivado',
       duration: 2000,
       color: "success"
     });
@@ -270,8 +304,24 @@ export class MensajesPage implements OnInit {
     console.log('Loading dismissed!');
   }
 
+  async presentLoading4() {
+
+    const loading = await this.loadingController.create({
+      message: 'Archivando mensaje, por favor espere...',
+      duration: 2000
+    });
+    await loading.present();
+    this.rechargeArrayOFMessages();
+    const { role, data } = await loading.onDidDismiss();
+    console.log('Loading dismissed!');
+    this.presentArchiveToast();
+  }
+
   closeSession() {
     this.router.navigateByUrl("/login");
     sessionStorage.removeItem("User");
+    this.search = "";
+    this.today = new Date().toISOString().substring(0, 10);
+    this.comp2 = false;
   }
 }

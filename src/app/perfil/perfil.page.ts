@@ -13,8 +13,8 @@ import { InsertarProfesorService } from 'src/Services/insertar-profesor.service'
   styleUrls: ['./perfil.page.scss'],
 })
 export class PerfilPage implements OnInit {
-  comp:boolean = false;
-  usersBBDD:any;
+  comp: boolean = false;
+  usersBBDD: any;
   users = JSON.parse(sessionStorage.getItem("User"));
   //Variables para controlar la edicion de campos
   ableEdit: boolean = false;
@@ -24,10 +24,10 @@ export class PerfilPage implements OnInit {
 
   //Variables de usuario
   userName: string = this.users.user;
-  
+
   password: string = "";
   userType: string = "";
-  password2:string = "";
+  password2: string = "";
 
   passwordAnt: string = this.password;
   userNameAnt: string = this.userName;
@@ -52,15 +52,17 @@ export class PerfilPage implements OnInit {
   ) {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     let users = JSON.parse(sessionStorage.getItem("User"));
     this.userName = users.user;
     this.userType = users.type;
+    this.userNameAnt = this.userName;
+    this.passwordAnt = users.pass;
     this.userService.refillUsuarios();
-    setTimeout(()=>{
+    setTimeout(() => {
       this.usersBBDD = JSON.parse(localStorage.getItem("Usuarios"));
       this.userService.clearStorageUsu();
-    },500);
+    }, 500);
   }
 
   ngOnInit() {
@@ -76,7 +78,7 @@ export class PerfilPage implements OnInit {
     }
   }
 
-  seePassField2(){
+  seePassField2() {
     if (this.inputType2 === "password") {
       this.inputType2 = "text";
       this.iconName2 = "eye-off-outline";
@@ -118,14 +120,30 @@ export class PerfilPage implements OnInit {
           text: 'Okay',
           handler: () => {
             let comp = false;
-            for(let usu of this.usersBBDD){
-              if(usu.NombreUsuario === this.userName){
+            let opc = "";
+            if (this.userName !== this.userNameAnt && opc === "") {
+              opc = "N";
+              console.log(opc);
+            } else if (this.userName !== this.userNameAnt && opc !== "") {
+              opc += "yN";
+              console.log(opc);
+            }
+            console.log(this.password + " - " + this.passwordAnt);
+            if (this.password !== this.passwordAnt && this.password !== "" && this.passwordAnt !== "" && opc === "") {
+              opc = "P";
+              console.log(opc);
+            } else if (this.password !== this.passwordAnt && this.password !== "" && this.passwordAnt !== "" && opc !== "") {
+              opc += "yP";
+              console.log(opc);
+            }
+            for (let usu of this.usersBBDD) {
+              if (usu.NombreUsuario === this.userName  && opc === "N" || opc === "yN") {
                 this.presentLoading2();
                 comp = true;
                 break;
               }
             }
-            if(this.password === this.password2 && comp === false) this.presentLoading();
+            if (this.password === this.password2 && comp === false) this.presentLoading(opc);
             else if (this.password !== this.password2 && comp === false) this.presentErrorToast();
           }
         }, {
@@ -142,28 +160,13 @@ export class PerfilPage implements OnInit {
     await alert.present();
   }
 
-  async presentLoading() {
+  async presentLoading(opc) {
     const loading = await this.loadCtrl.create({
       message: 'Cambiando los datos. Por favor espere...',
       duration: 3000
     });
     await loading.present();
-    let opc = "";
-    if (this.userName !== this.userNameAnt && opc === "") {
-      opc = "N";
-      console.log(opc);
-    } else if (this.userName !== this.userNameAnt && opc !== "") {
-      opc += "yN";
-      console.log(opc);
-    }
 
-    if (this.password !== this.passwordAnt && opc === "") {
-      opc = "P";
-      console.log(opc);
-    } else if (this.password !== this.passwordAnt && opc !== "") {
-      opc += "yP";
-      console.log(opc);
-    }
 
 
     let json = {
@@ -172,12 +175,14 @@ export class PerfilPage implements OnInit {
       pass: this.password,
       opc: opc
     }
-    console.log(json);
+    
     this.userService.updateUsuario(json);
     const { role, data } = await loading.onDidDismiss();
     this.presentToast();
     this.userName = this.userNameAnt;
-    this.password = this.passwordAnt;
+    this.password = "";
+    this.inputType = "password";
+    this.iconName = "eye-outline";
     console.log('Loading dismissed!');
   }
 
@@ -187,7 +192,7 @@ export class PerfilPage implements OnInit {
       duration: 3000
     });
     await loading.present();
-    
+
     const { role, data } = await loading.onDidDismiss();
     this.presentUserErrorToast();
     console.log('Loading dismissed!');
@@ -231,22 +236,22 @@ export class PerfilPage implements OnInit {
     toast.present();
   }
 
-  showNavOption(){
-    if(!this.comp) this.comp = true;
+  showNavOption() {
+    if (!this.comp) this.comp = true;
     else this.comp = false;
   }
 
-  goToMensajes(){
+  goToMensajes() {
     this.route.navigateByUrl("/mensajes");
     this.comp = false;
   }
 
-  goToMensajesEnviados(){
+  goToMensajesEnviados() {
     this.route.navigateByUrl("/mensajes-enviados");
     this.comp = false;
   }
 
-  closeSession(){
+  closeSession() {
     this.route.navigateByUrl("/login");
     sessionStorage.removeItem("User");
   }

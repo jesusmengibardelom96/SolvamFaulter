@@ -22,7 +22,7 @@
       </ion-card-header>
 
       <ion-card-content>
-        <ion-textarea value="{{textMess}}"></ion-textarea>
+        <ion-textarea value="{{textMess}}" rows="5"></ion-textarea>
       </ion-card-content>
       <ion-item>
         <ion-button slot="end" (click)="sendMailP()" *ngIf="compMailP"><ion-icon name="mail-outline"></ion-icon>padre</ion-button>
@@ -33,6 +33,13 @@
         <ion-button slot="end" (click)="sendWhatsP()" color="success" *ngIf="compTlfP"><ion-icon name="logo-whatsapp"></ion-icon>padre</ion-button>
         <ion-button slot="end" (click)="sendWhatsM()" color="success" *ngIf="compTlfM"><ion-icon name="logo-whatsapp"></ion-icon>madre</ion-button>
         <ion-button slot="end" (click)="sendWhatsA()" color="success" *ngIf="compTlfA"><ion-icon name="logo-whatsapp"></ion-icon>alu.</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-button slot="end" (click)="goToMensajes()">Mensajes</ion-button>
+        <ion-button slot="end" (click)="goToMensajesEnviados()">Enviados</ion-button>
+      </ion-item>
+      <ion-item>
+        <ion-button slot="end" (click)="archivarMensaje()" color="success">Archivar</ion-button>
       </ion-item>
     </ion-card>
   </ng-container>

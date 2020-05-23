@@ -13,9 +13,7 @@
 <ion-content>
   <ion-list *ngFor="let adminList of adminProfesoresList">
     <ion-item button (click)="showOptionsAdminProf(adminList)">
-      <ion-title>
         <ion-label>{{adminList.title}}</ion-label>
-      </ion-title>
       <ion-buttons slot="end">
         <ion-button>
           <ion-icon name="chevron-forward-outline"></ion-icon>

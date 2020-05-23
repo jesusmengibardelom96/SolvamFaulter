@@ -3,8 +3,6 @@
     include 'connection.php';
     //echo "Hola";
 
-    $recogidaDatos = file_get_contents("php://input");
-    $request =json_decode($recogidaDatos);
     $consulta = $conexion -> query("SELECT 
     Alumno.Nombre, 
     Matricula.HorasFaltadasTotales, 

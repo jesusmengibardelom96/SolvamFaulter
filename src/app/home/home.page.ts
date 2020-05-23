@@ -50,7 +50,7 @@ export class HomePage {
   matriculados: any = [];
 
   //Array de mensajes
-  messages:any = [];
+  messages: any = [];
 
   //Comprobantes para pasar falta
   comp: boolean = false;
@@ -71,8 +71,11 @@ export class HomePage {
   fechaFaltaAlumno: any;
   today: any;
   today2: any;
+  today3: any;
+  today4: any;
   firstDate: any;
   hours: any = "2";
+  hoursAlumnos: any;
   //Fin variables
   constructor(
     private menu: MenuController,
@@ -86,11 +89,11 @@ export class HomePage {
     private insertarFaltas: InsertarFaltasService,
     private loadingController: LoadingController,
     private deleteFaltas: DeleteFaltasService,
-    private route : Router
+    private route: Router
   ) {
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     let users = JSON.parse(sessionStorage.getItem("User"));
     this.profesor = users.user;
 
@@ -105,11 +108,11 @@ export class HomePage {
 
       this.asignaturas = JSON.parse(localStorage.getItem("Asignaturas"));
       this.asigService.clearStorageAsig();
-      console.log(this.asignaturas);
+
 
       this.messages = JSON.parse(localStorage.getItem("Messages"));
       this.asigService.clearStorageMess();
-      console.log(this.messages);
+
       this.profesores = JSON.parse(localStorage.getItem("Usuarios"));
       for (let prof of this.profesores) {
         if (prof.NombreUsuario === this.profesor) {
@@ -119,21 +122,27 @@ export class HomePage {
 
       }
 
-      console.log(this.idUsu);
-      console.log(this.profTipo);
+
       this.usuService.clearStorageUsu();
 
       this.matService.clearStorageMat();
-    }, 500);
+    }, 1500);
 
     this.today = new Date().toUTCString().substring(0, 10);
     this.today2 = new Date().toUTCString().substring(0, 10);
+    this.today3 = new Date().toISOString().substring(0, 10);
+    this.today4 = new Date().toISOString().substring(0, 10);
   }
 
   //Inicio de la aplicacion
   ngOnInit() {
 
-    
+
+  }
+
+  navigation() {
+    this.compFiltro = false;
+    this.comp = false;
   }
 
   //Abre el menu
@@ -151,9 +160,9 @@ export class HomePage {
     let j = 0;
     //this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
     if (this.comp === false) {
-      console.log(this.comp);
+
       this.nombAsig = nomAsig;
-      console.log(this.nombAsig);
+
       this.asigService.getCompAsig(this.nombAsig);
 
       setTimeout(() => {
@@ -161,7 +170,7 @@ export class HomePage {
         this.compFiltro = false;
         this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
         this.matriculados = [...this.matriculados];
-        console.log(this.matriculados);
+
         if (this.matriculados.length === 0) {
           this.comp2 = true;
         } else {
@@ -172,6 +181,7 @@ export class HomePage {
       }, 500);
     } else {
       this.comp = false;
+      this.hours = "2";
       this.matService.clearStorageMat();
     }
 
@@ -179,45 +189,44 @@ export class HomePage {
 
   //Crea un array de alumnos seleccionados
   selectAlumno(item) {
-    if(this.messages.length === 0){
+    if (this.messages.length === 0) {
       if (this.selected.length !== 0 && !item.seleccionado) {
         item.seleccionado = true;
-        console.log(this.messages[this.messages.length-1]);
-        item.MensajeId= parseInt(this.selected[this.selected.length-1].MensajeId) + 1;
+
+        item.MensajeId = parseInt(this.selected[this.selected.length - 1].MensajeId) + 1;
         this.selected.push(item);
         this.messages.push(item);
       } else if (this.selected.length !== 0 && item.seleccionado) {
-        console.log(this.selected.length + " - " + item.seleccionado);
+
         item.seleccionado = false;
         let index = this.selected.indexOf(item) - this.selected.length;
         this.selected.splice(index, 1);
         this.messages.splice(index, 1);
-      }else if (this.selected.length === 0) {
+      } else if (this.selected.length === 0) {
         item.seleccionado = true;
-        if(this.messages.length === 0){
+        if (this.messages.length === 0) {
           item.MensajeId = 1;
           this.messages.push(item);
-        }else{
-          item.MensajeId= parseInt(this.messages[this.messages.length-1].MensajeId) + 1;
+        } else {
+          item.MensajeId = parseInt(this.messages[this.messages.length - 1].MensajeId) + 1;
           this.messages.push(item);
         }
         this.selected.push(item);
       }
-      console.log(this.selected);
-      console.log(this.messages);
-    }else{
+
+    } else {
       if (this.selected.length !== 0 && !item.seleccionado) {
         item.seleccionado = true;
-        item.MensajeId= parseInt(this.selected[this.selected.length-1].MensajeId) + 1;
+        item.MensajeId = parseInt(this.selected[this.selected.length - 1].MensajeId) + 1;
         this.selected.push(item);
       } else if (this.selected.length !== 0 && item.seleccionado) {
-        console.log(this.selected.length + " - " + item.seleccionado);
+
         item.seleccionado = false;
         let index = this.selected.indexOf(item) - this.selected.length;
         this.selected.splice(index, 1);
-      }else if (this.selected.length === 0) {
+      } else if (this.selected.length === 0) {
         item.seleccionado = true;
-        item.MensajeId= parseInt(this.messages[this.messages.length-1].MensajeId) + 1;
+        item.MensajeId = parseInt(this.messages[this.messages.length - 1].MensajeId) + 1;
         this.selected.push(item);
       }
       console.log(this.selected);
@@ -237,20 +246,51 @@ export class HomePage {
       this.today = new Date().toUTCString().substring(0, 10);
     } else {
       for (let i of this.selected) {
-        textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha faltado a " + i.NombreAsig + " " + this.hours + " h el dia " + this.parseDate(dateToday);
-        let json = {
-          fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
-          textoMensaje: textMessage,
-          idMatricula: parseInt(i.Id),
-          horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
-          horas: parseInt(this.hours),
-          idAlumno: i.Id_Alumno,
-          idAsig: parseInt(i.Id_Asignatura),
-          idMess: parseInt(i.MensajeId)
+        if (this.hours === "0.33") {
+          console.log(parseFloat(this.hours) + parseInt(i.HorasFaltadasTotales));
+          textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " se ha retrasado en " + i.NombreAsig + " el dia " + this.parseDate(dateToday) + " - SOLVAM \n \n Centro FP SOLVAM";
+          let json = {
+            fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
+            textoMensaje: textMessage,
+            idMatricula: parseInt(i.Id),
+            horasTotales: (parseFloat(this.hours) + parseInt(i.HorasFaltadasTotales)),
+            horas: parseFloat(this.hours),
+            idAlumno: i.Id_Alumno,
+            idAsig: parseInt(i.Id_Asignatura),
+            idMess: parseInt(i.MensajeId)
+          }
+          this.insertarFaltas.insertFaltas(json);
+          this.insertarFaltas.insertMessage(json);
+        } else if (this.hours === "0") {
+          textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha sido expulsado en " + i.NombreAsig + " el dia " + this.parseDate(dateToday)+ " - SOLVAM \n \n Centro FP SOLVAM";
+          let json = {
+            fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
+            textoMensaje: textMessage,
+            idMatricula: parseInt(i.Id),
+            horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
+            horas: parseInt(this.hours),
+            idAlumno: i.Id_Alumno,
+            idAsig: parseInt(i.Id_Asignatura),
+            idMess: parseInt(i.MensajeId)
+          }
+          this.insertarFaltas.insertFaltas(json);
+          this.insertarFaltas.insertMessage(json);
+        } else {
+          textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha faltado a " + i.NombreAsig + " " + this.hours + " horas el dia " + this.parseDate(dateToday)+ " - SOLVAM \n \n Centro FP SOLVAM";
+          let json = {
+            fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
+            textoMensaje: textMessage,
+            idMatricula: parseInt(i.Id),
+            horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
+            horas: parseInt(this.hours),
+            idAlumno: i.Id_Alumno,
+            idAsig: parseInt(i.Id_Asignatura),
+            idMess: parseInt(i.MensajeId)
+          }
+          this.insertarFaltas.insertFaltas(json);
+          this.insertarFaltas.insertMessage(json);
         }
-        this.insertarFaltas.insertFaltas(json);
-        this.insertarFaltas.insertMessage(json);
-        console.log(json);
+
       }
       this.presentLoading("faltaInsertada");
       this.selected = [];
@@ -261,6 +301,7 @@ export class HomePage {
   //Inicio ver Faltas
   //Muestra las faltas de los alumnos en esa asignatura
   showAlumnosFaltas(nomAsig: String) {
+    this.hours = "2";
     this.alumnosFaltas = [];
     if (this.compFiltro === false) {
       this.nombAsig = nomAsig;
@@ -287,19 +328,20 @@ export class HomePage {
     if (+date2 < +date1) {
       this.presentErrorDate();
     } else {
-      console.log(date1.getFullYear() + '-' + ((date1.getMonth() + 1) < 10 ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1)) + '-' + ((date1.getDate() + 1) < 10 ? '0' + (date1.getDate()) : (date1.getDate())));
-      console.log(date2.getFullYear() + '-' + ((date2.getMonth() + 1) < 10 ? '0' + (date2.getMonth() + 1) : (date2.getMonth() + 1)) + '-' + ((date2.getDate() + 1) < 10 ? '0' + (date2.getDate()) : (date2.getDate())));
       this.aluFaltas.getFaltasAlumno(date1.getFullYear() + '-' + ((date1.getMonth() + 1) < 10 ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1)) + '-' + ((date1.getDate() + 1) < 10 ? '0' + (date1.getDate()) : (date1.getDate())), date2.getFullYear() + '-' + ((date2.getMonth() + 1) < 10 ? '0' + (date2.getMonth() + 1) : (date2.getMonth() + 1)) + '-' + ((date2.getDate() + 1) < 10 ? '0' + (date2.getDate()) : (date2.getDate())), this.nombAsig);
       setTimeout(() => {
         this.alumnosFaltas = JSON.parse(localStorage.getItem("Faltas"));
         this.aluFaltas.clearStorageFal();
         for (let i of this.alumnosFaltas) {
-          console.log(i.fecha);
+
           this.fechaFaltaAlumno = this.parseDate(i.fecha);
+          console.log(i);
           i.fecha = this.parseDate(i.fecha);
-          console.log(this.fechaFaltaAlumno);
+          i.prueba = parseFloat(i.HorasFaltadas);
+          let cadena = i.Apellido1 + ", " + i.Nombre;
+          i.Nombre = cadena.length > 10 ? i.Nombre.substring(0,5)+"...": i.Nombre;
         }
-        console.log(this.alumnosFaltas);
+
         if (this.alumnosFaltas.length === 0) {
           this.compAlumnos = true;
           this.compDelete = false;
@@ -310,23 +352,6 @@ export class HomePage {
       }, 500);
     }
 
-  }
-
-  //Crea un array de faltas seleccionadas
-  selectAlumno2(item) {
-
-    if (this.faltasRegistradas.length !== 0 && !item.seleccionado) {
-      item.seleccionado = true;
-      this.faltasRegistradas.push(item);
-    } else if (this.faltasRegistradas.length !== 0 && item.seleccionado) {
-      item.seleccionado = false;
-      let index = this.faltasRegistradas.indexOf(item) - this.faltasRegistradas.length;
-      this.faltasRegistradas.splice(index, 1);
-    }else if (this.faltasRegistradas.length === 0) {
-      item.seleccionado = true;
-      this.faltasRegistradas.push(item);
-    }
-    console.log(this.faltasRegistradas);
   }
 
   //Comprueba que el campo de fecha inicio sea correcto
@@ -366,32 +391,31 @@ export class HomePage {
   }
   //Fin ver faltas
 
-  iscompDelete(){
-    if(this.alumnosFaltas.length === 0){
+  iscompDelete(item) {
+    if (this.alumnosFaltas.length === 0) {
       this.showErrorToast("compDelete");
-    }else{
-      this.presentCompDelete();
+    } else {
+      this.presentCompDelete(item);
     }
   }
   //Inicio Eliminar faltas
-  private deleteFalta() {
-    
-    for (let i of this.faltasRegistradas) {
-      let dateToday = new Date(i.fecha);
-      let json = {
-        fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate() + 1) : (dateToday.getDate())),
-        idMatricula: i.id,
-        idAlumno: i.Id_Alumno,
-        horasTotales: (parseInt(i.HorasFaltadasTotales) - parseInt(i.HorasFaltadas)),
-        MensajeId: i.MensajeId,
-        idAsig: i.Id_Asignatura
-      }
-      console.log(json);
-      this.deleteFaltas.deleteFaltas(json);
-      this.deleteFaltas.updateHoras(json);
-      this.presentLoading("faltasEliminadas");
+  private deleteFalta(item) {
+
+    let dateToday = new Date(item.fecha);
+    let json = {
+      fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate() + 1) : (dateToday.getDate())),
+      idMatricula: item.id,
+      idAlumno: item.Id_Alumno,
+      horasTotales: (parseInt(item.HorasFaltadasTotales) - parseInt(item.HorasFaltadas)),
+      MensajeId: item.MensajeId,
+      idAsig: item.Id_Asignatura
     }
-    
+    console.log(json);
+    this.deleteFaltas.deleteFaltas(json);
+    this.deleteFaltas.updateHoras(json);
+
+    this.presentLoading("faltasEliminadas");
+
   }
   //Fin Eliminar faltas
 
@@ -409,23 +433,22 @@ export class HomePage {
   }
 
   //Presenta una confirmacion antes de borrar las faltas
-  async presentCompDelete() {
+  async presentCompDelete(item) {
     const alert = await this.alert.create({
       header: 'Borrar',
       subHeader: 'Borrar faltas',
       message: '¿Esta seguro de que quiere eliminar estas faltas?',
-      buttons: [ {
-          text: 'Okay',
-          handler: () => {
-            this.deleteFalta();
-            this.faltasRegistradas = [];
-          }
-        },
-        {
-          text: 'Cancelar',
-          handler: () => {
-            console.log('Cancelado');
-          }
+      buttons: [{
+        text: 'Okay',
+        handler: () => {
+          this.deleteFalta(item);
+        }
+      },
+      {
+        text: 'Cancelar',
+        handler: () => {
+          console.log('Cancelado');
+        }
       }]
     });
 
@@ -456,14 +479,14 @@ export class HomePage {
         position: 'bottom',
         color: 'success'
       });
-    }else if(type === "faltasEliminadas"){
+    } else if (type === "faltasEliminadas") {
       toast = await this.toast.create({
         message: "Faltas eliminadas",
         duration: 3000,
         position: 'bottom',
         color: 'success'
       });
-    }else if(type === "compDelete"){
+    } else if (type === "compDelete") {
       toast = await this.toast.create({
         message: "No hay alumnos que seleccionar aqui",
         duration: 3000,
@@ -501,30 +524,15 @@ export class HomePage {
       console.log(this.matriculados);
       this.showErrorToast("faltaInsertada");
       console.log('Loading dismissed!');
-    }else if(type === "faltasEliminadas"){
+    } else if (type === "faltasEliminadas") {
       const loading = await this.loadingController.create({
         message: 'Eliminando faltas, por favor espere...',
         duration: 2000
       });
       await loading.present();
+      this.sendQueryFaltas();
+      if (this.alumnosFaltas.length === 0) this.comp2 = false;
       const { role, data } = await loading.onDidDismiss();
-      this.aluFaltas.getFaltasAlumno(date1, date2, this.nombAsig);
-      setTimeout(() => {
-        this.alumnosFaltas = JSON.parse(localStorage.getItem("Faltas"));
-        if(this.alumnosFaltas === null){
-          this.aluFaltas.clearStorageFal();
-          this.compAlumnos = true;
-        }else{
-          this.aluFaltas.clearStorageFal();
-          for (let i of this.alumnosFaltas) {
-            console.log(i.fecha);
-            this.fechaFaltaAlumno = this.parseDate(i.fecha);
-            i.fecha = this.parseDate(i.fecha);
-            console.log(this.fechaFaltaAlumno);
-          }
-        }
-      },500);
-      if(this.alumnosFaltas.length === 0) this.comp2 = false;
       this.showErrorToast("faltasEliminadas");
       console.log('Loading dismissed!');
     }
@@ -542,8 +550,11 @@ export class HomePage {
     const { role, data } = await loading.onDidDismiss();
     console.log('Loading dismissed!');
   }
-  closeSession(){
+
+  closeSession() {
     this.route.navigateByUrl("/login");
+    this.comp = false;
+    this.compFiltro = false;
     sessionStorage.removeItem("User");
   }
 }
