@@ -75,7 +75,7 @@ export class VerMensajePage implements OnInit {
       cc: '',
       bcc: [],
       attachments: [],
-      subject: 'Faltas de asistencia',
+      subject: 'Faltas de asistencia - SOLVAM',
       body: this.textMess,
       isHtml: true
     }
@@ -90,7 +90,7 @@ export class VerMensajePage implements OnInit {
       cc: '',
       bcc: [],
       attachments: [],
-      subject: 'Faltas de asistencia',
+      subject: 'Faltas de asistencia - SOLVAM',
       body: this.textMess,
       isHtml: true
     }
@@ -105,7 +105,7 @@ export class VerMensajePage implements OnInit {
       cc: '',
       bcc: [],
       attachments: [],
-      subject: 'Faltas de asistencia',
+      subject: 'Faltas de asistencia - SOLVAM',
       body: this.textMess,
       isHtml: true
     }

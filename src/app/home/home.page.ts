@@ -59,6 +59,8 @@ export class HomePage {
   //Comprobantes para ver las faltas
   compFiltro: boolean = false;
   compAlumnos: boolean = false;
+  compFiltro2: boolean = false;
+  compAlumnos2: boolean = false;
 
   //Array de alumnos faltados
   alumnosFaltas: any = [];
@@ -168,6 +170,7 @@ export class HomePage {
       setTimeout(() => {
         this.comp = true;
         this.compFiltro = false;
+        this.compFiltro2 = false;
         this.matriculados = JSON.parse(localStorage.getItem("Matriculados"));
         this.matriculados = [...this.matriculados];
 
@@ -245,55 +248,61 @@ export class HomePage {
       this.showErrorToast("FutureDate");
       this.today = new Date().toUTCString().substring(0, 10);
     } else {
-      for (let i of this.selected) {
-        if (this.hours === "0.33") {
-          console.log(parseFloat(this.hours) + parseInt(i.HorasFaltadasTotales));
-          textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " se ha retrasado en " + i.NombreAsig + " el dia " + this.parseDate(dateToday) + " - SOLVAM \n \n Centro FP SOLVAM";
-          let json = {
-            fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
-            textoMensaje: textMessage,
-            idMatricula: parseInt(i.Id),
-            horasTotales: (parseFloat(this.hours) + parseInt(i.HorasFaltadasTotales)),
-            horas: parseFloat(this.hours),
-            idAlumno: i.Id_Alumno,
-            idAsig: parseInt(i.Id_Asignatura),
-            idMess: parseInt(i.MensajeId)
+      if(this.selected.length !== 0 ){
+        for (let i of this.selected) {
+          if (this.hours === "0.33") {
+            console.log(parseFloat(this.hours) + parseInt(i.HorasFaltadasTotales));
+            textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " se ha retrasado en " + i.NombreAsig + " el día " + this.parseDate(dateToday) + "\n \n Centro FP SOLVAM";
+            let json = {
+              fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
+              textoMensaje: textMessage,
+              idMatricula: parseInt(i.Id),
+              horasTotales: (parseFloat(this.hours) + parseInt(i.HorasFaltadasTotales)),
+              horas: parseFloat(this.hours),
+              idAlumno: i.Id_Alumno,
+              idAsig: parseInt(i.Id_Asignatura),
+              idMess: parseInt(i.MensajeId)
+            }
+            this.insertarFaltas.insertFaltas(json);
+            this.insertarFaltas.insertMessage(json);
+          } else if (this.hours === "0") {
+            textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha sido expulsado en " + i.NombreAsig + " el día " + this.parseDate(dateToday)+ "\n \n Centro FP SOLVAM";
+            let json = {
+              fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
+              textoMensaje: textMessage,
+              idMatricula: parseInt(i.Id),
+              horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
+              horas: parseInt(this.hours),
+              idAlumno: i.Id_Alumno,
+              idAsig: parseInt(i.Id_Asignatura),
+              idMess: parseInt(i.MensajeId)
+            }
+            this.insertarFaltas.insertFaltas(json);
+            this.insertarFaltas.insertMessage(json);
+          } else {
+            textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha faltado a " + i.NombreAsig + " " + this.hours + " horas el día " + this.parseDate(dateToday)+ "\n \n Centro FP SOLVAM";
+            let json = {
+              fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
+              textoMensaje: textMessage,
+              idMatricula: parseInt(i.Id),
+              horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
+              horas: parseInt(this.hours),
+              idAlumno: i.Id_Alumno,
+              idAsig: parseInt(i.Id_Asignatura),
+              idMess: parseInt(i.MensajeId)
+            }
+            this.insertarFaltas.insertFaltas(json);
+            this.insertarFaltas.insertMessage(json);
           }
-          this.insertarFaltas.insertFaltas(json);
-          this.insertarFaltas.insertMessage(json);
-        } else if (this.hours === "0") {
-          textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha sido expulsado en " + i.NombreAsig + " el dia " + this.parseDate(dateToday)+ " - SOLVAM \n \n Centro FP SOLVAM";
-          let json = {
-            fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
-            textoMensaje: textMessage,
-            idMatricula: parseInt(i.Id),
-            horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
-            horas: parseInt(this.hours),
-            idAlumno: i.Id_Alumno,
-            idAsig: parseInt(i.Id_Asignatura),
-            idMess: parseInt(i.MensajeId)
-          }
-          this.insertarFaltas.insertFaltas(json);
-          this.insertarFaltas.insertMessage(json);
-        } else {
-          textMessage = "El alumno " + i.Nombre + " " + i.Apellido1 + " ha faltado a " + i.NombreAsig + " " + this.hours + " horas el dia " + this.parseDate(dateToday)+ " - SOLVAM \n \n Centro FP SOLVAM";
-          let json = {
-            fecha: dateToday.getFullYear() + '-' + ((dateToday.getMonth() + 1) < 10 ? '0' + (dateToday.getMonth() + 1) : (dateToday.getMonth() + 1)) + '-' + ((dateToday.getDate() + 1) < 10 ? '0' + (dateToday.getDate()) : (dateToday.getDate())),
-            textoMensaje: textMessage,
-            idMatricula: parseInt(i.Id),
-            horasTotales: (parseInt(this.hours) + parseInt(i.HorasFaltadasTotales)),
-            horas: parseInt(this.hours),
-            idAlumno: i.Id_Alumno,
-            idAsig: parseInt(i.Id_Asignatura),
-            idMess: parseInt(i.MensajeId)
-          }
-          this.insertarFaltas.insertFaltas(json);
-          this.insertarFaltas.insertMessage(json);
+  
         }
-
+        this.presentLoading("faltaInsertada");
+        this.selected = [];
+      }else{
+        console.log(this.selected);
+        this.showErrorToast("selectedVoid");
       }
-      this.presentLoading("faltaInsertada");
-      this.selected = [];
+      
     }
   }
   //Fin pasar lista
@@ -308,6 +317,7 @@ export class HomePage {
 
       this.compFiltro = true;
       this.compAlumnos = false;
+      this.compFiltro2 = false;
       this.comp = false;
       this.compDelete = false;
 
@@ -315,6 +325,7 @@ export class HomePage {
       this.today2 = new Date().toISOString().substring(0, 10);
     } else {
       this.compFiltro = false;
+      this.compFiltro2 = false;
       this.compDelete = true;
     }
   }
@@ -418,7 +429,57 @@ export class HomePage {
 
   }
   //Fin Eliminar faltas
+  showAlumnosFaltasTotales(NombreAsig){
+    console.log(this.compFiltro2);
+    this.hours = "2";
+    this.alumnosFaltas = [];
+    if (this.compFiltro2 === false) {
+      this.nombAsig = NombreAsig;
 
+      this.compFiltro2 = true;
+      this.compFiltro = false;
+      this.compAlumnos2 = false;
+      this.comp = false;
+      this.compDelete = false;
+
+      this.today = new Date().toISOString().substring(0, 10);
+      this.today2 = new Date().toISOString().substring(0, 10);
+    } else {
+      console.log("Entro");
+      this.compFiltro2 = false;
+      this.compDelete = true;
+    }
+  }
+  sendQueryFaltasTotales(){
+    this.alumnosFaltas = [];
+    let date1 = new Date(this.today);
+    let date2 = new Date(this.today2);
+
+    if (+date2 < +date1) {
+      this.presentErrorDate();
+    } else {
+      this.aluFaltas.getFaltasAlumnoTotales(date1.getFullYear() + '-' + ((date1.getMonth() + 1) < 10 ? '0' + (date1.getMonth() + 1) : (date1.getMonth() + 1)) + '-' + ((date1.getDate() + 1) < 10 ? '0' + (date1.getDate()) : (date1.getDate())), date2.getFullYear() + '-' + ((date2.getMonth() + 1) < 10 ? '0' + (date2.getMonth() + 1) : (date2.getMonth() + 1)) + '-' + ((date2.getDate() + 1) < 10 ? '0' + (date2.getDate()) : (date2.getDate())), this.nombAsig);
+      setTimeout(() => {
+        this.alumnosFaltas = JSON.parse(localStorage.getItem("Faltas"));
+        this.aluFaltas.clearStorageFal();
+        for (let i of this.alumnosFaltas) {
+
+          this.fechaFaltaAlumno = this.parseDate(i.fecha);
+          console.log(i);
+          i.fecha = this.parseDate(i.fecha);
+          
+        }
+
+        if (this.alumnosFaltas.length === 0) {
+          this.compAlumnos2 = true;
+          this.compDelete = false;
+        } else {
+          this.compAlumnos2 = false;
+          this.compDelete = true;
+        }
+      }, 500);
+    }
+  }
   //Inicio comprobaciones
   //Presenta un error alert sobre la fecha cuando aplicas el filtro
   async presentErrorDate() {
@@ -489,6 +550,13 @@ export class HomePage {
     } else if (type === "compDelete") {
       toast = await this.toast.create({
         message: "No hay alumnos que seleccionar aqui",
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      });
+    } else if (type === "selectedVoid") {
+      toast = await this.toast.create({
+        message: "Seleccione al menos un alumno",
         duration: 3000,
         position: 'bottom',
         color: 'danger'

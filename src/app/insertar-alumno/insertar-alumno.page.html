@@ -13,30 +13,30 @@
 <ion-content>
 
   <ion-item>
-    <ion-label position="floating">NIA</ion-label>
-    <ion-input type="number" [(ngModel)]="nia"></ion-input>
+    <ion-label position="floating">NIA<ion-text color="danger">*</ion-text></ion-label>
+    <ion-input type="number" [(ngModel)]="nia" required></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label position="floating">Nombre</ion-label>
-    <ion-input type="text" [(ngModel)]="nombreAlumno"></ion-input>
+    <ion-label position="floating">Nombre<ion-text color="danger">*</ion-text></ion-label>
+    <ion-input type="text" [(ngModel)]="nombreAlumno" required></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label position="floating">Apellido1</ion-label>
-    <ion-input type="text" [(ngModel)]="apellidoAlumno1"></ion-input>
+    <ion-label position="floating">Apellido1<ion-text color="danger">*</ion-text></ion-label>
+    <ion-input type="text" [(ngModel)]="apellidoAlumno1" required></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label position="floating">Apellido2</ion-label>
-    <ion-input type="text" [(ngModel)]="apellidoAlumno2"></ion-input>
+    <ion-label position="floating">Apellido2<ion-text color="danger">*</ion-text></ion-label>
+    <ion-input type="text" [(ngModel)]="apellidoAlumno2" required></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label>Cursos</ion-label>
-    <ion-select placeholder="Selecciona uno" (ionChange)="getCurso2($event)" [(ngModel)]="curso2">
+    <ion-label>Cursos<ion-text color="danger">*</ion-text></ion-label>
+    <ion-select placeholder="Selecciona uno" (ionChange)="getCurso2($event)" [(ngModel)]="curso2" required>
       <ion-select-option *ngFor="let cur of cursos" value="{{cur.Nombre}}">{{cur.NombreSolvam}}</ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item>
-    <ion-label position="floating">Telefono alumno</ion-label>
-    <ion-input type="number" [(ngModel)]="tlfAlumno"></ion-input>
+    <ion-label position="floating">Telefono alumno<ion-text color="danger">*</ion-text></ion-label>
+    <ion-input type="number" [(ngModel)]="tlfAlumno" required></ion-input>
   </ion-item>
   <ion-item>
     <ion-label position="floating">Telefono padre</ion-label>
@@ -47,16 +47,16 @@
     <ion-input type="number" [(ngModel)]="tlfMadre"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label position="floating">Correo alumno</ion-label>
-    <ion-input type="text" [(ngModel)]="mailAlumno"></ion-input>
+    <ion-label position="floating">Correo alumno<ion-text color="danger">*</ion-text></ion-label>
+    <ion-input type="email" [(ngModel)]="mailAlumno" required></ion-input>
   </ion-item>
   <ion-item>
     <ion-label position="floating">Correo padre</ion-label>
-    <ion-input type="text" [(ngModel)]="mailPadre"></ion-input>
+    <ion-input type="email" [(ngModel)]="mailPadre"></ion-input>
   </ion-item>
   <ion-item>
     <ion-label position="floating">Correo madre</ion-label>
-    <ion-input type="text" [(ngModel)]="mailMadre"></ion-input>
+    <ion-input type="email" [(ngModel)]="mailMadre"></ion-input>
   </ion-item>
   <ion-button class="iconAdminAlumnoCSVSaveItem" (click)="InsertAlumno()" color="success" expand="block">
     <ion-icon name="cloud-upload-outline"></ion-icon>

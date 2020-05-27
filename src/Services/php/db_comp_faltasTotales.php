@@ -14,7 +14,7 @@
     Matricula.Id_Alumno,
     Matricula.HorasFaltadasTotales,
     Mensajes.fecha,
-    Mensajes.HorasFaltadas,
+    SUM(Mensajes.HorasFaltadas) AS horasTotales,
     Mensajes.MensajeId
     FROM Mensajes 
     JOIN Matricula 
@@ -23,7 +23,7 @@
     ON Matricula.Id_Alumno = Alumno.NIA
     JOIN Asignaturas
     ON Matricula.Id_Asignatura = Asignaturas.id
-    WHERE Asignaturas.NombreAsig = '$request->nombAsig' AND DATE(fecha) >= '$request->fechaInicio' AND DATE(fecha) <= '$request->fechaFin' ORDER BY Mensajes.fecha ASC");
+    WHERE Asignaturas.NombreAsig = '$request->nombAsig' AND DATE(fecha) >= '$request->fechaInicio' AND DATE(fecha) <= '$request->fechaFin' GROUP BY Matricula.id ORDER BY Mensajes.fecha DESC");
 
     $arrayMatricula = array();
     while($fila = mysqli_fetch_assoc($consulta)){

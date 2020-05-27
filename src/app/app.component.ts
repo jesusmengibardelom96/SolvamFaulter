@@ -42,7 +42,7 @@ export class AppComponent {
         icon  : "time-outline"
       },
       {
-        title : "Mensajes",
+        title : "Mensajes pendientes",
         url   : "/mensajes",
         icon  : "file-tray-outline"
       },

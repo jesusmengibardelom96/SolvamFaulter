@@ -25,6 +25,9 @@
             <ion-icon src="./assets/clipboard-list-solid.svg"></ion-icon>
           </ion-button>
           <ion-button (click)="showAlumnosFaltas(a.NombreAsig)" color="danger">
+            <ion-icon name="trash-bin-outline"></ion-icon>
+          </ion-button>
+          <ion-button (click)="showAlumnosFaltasTotales(a.NombreAsig)" color="danger">
             <ion-icon src="./assets/filter-solid.svg"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -79,8 +82,8 @@
 
         <ion-item *ngFor="let af of alumnosFaltas" >
           <ion-label *ngIf="af.HorasFaltadas !== '0.00' && af.HorasFaltadas !== '0.33'">{{af.Apellido1}}, {{af.Nombre}}-{{af.prueba}}-{{af.fecha}}</ion-label>
-          <ion-label *ngIf="af.HorasFaltadas === '0.33'">{{af.Apellido1}}, {{af.Nombre}}-{{af.fecha}} <ion-text color="primary">R</ion-text></ion-label>
-          <ion-label *ngIf="af.HorasFaltadas === '0.00'">{{af.Apellido1}}, {{af.Nombre}}-{{af.fecha}} <ion-text color="danger">E</ion-text></ion-label>
+          <ion-label *ngIf="af.HorasFaltadas === '0.33'" color="primary">{{af.Apellido1}}, {{af.Nombre}}-{{af.fecha}} R</ion-label>
+          <ion-label *ngIf="af.HorasFaltadas === '0.00'" color="danger">{{af.Apellido1}}, {{af.Nombre}}-{{af.fecha}} E</ion-label>
           <!--<ion-checkbox class="checkboxLeft" (click)="selectAlumno2(af)" slot="start"></ion-checkbox>-->
           <ion-button color="danger" (click)="iscompDelete(af)">
             <ion-icon name="trash-outline"></ion-icon>
@@ -98,6 +101,45 @@
         </ion-item>
 
         <ion-button color="success" (click)="sendQueryFaltas()" class="sendButton" expand="block">
+          <ion-icon name="search-circle-outline" size="large"></ion-icon>
+        </ion-button>
+        <ion-item>
+          <ion-title>
+            No hay faltas
+          </ion-title>
+        </ion-item>
+      </ng-container>
+      <!-- filtro faltas -->
+      <ng-container *ngIf="compFiltro2 === true && a.NombreAsig === nombAsig && compAlumnos2 === false">
+        <ion-item>
+          <ion-label>Fecha inicio: </ion-label>
+          <ion-datetime [(ngModel)]="today" (change)="fechaIniComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre" max="{{today3}}"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fecha fin: </ion-label>
+          <ion-datetime [(ngModel)]="today2" (change)="fechaFinComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre" max="{{today4}}"></ion-datetime>
+        </ion-item>
+
+        <ion-button color="success" (click)="sendQueryFaltasTotales()" class="sendButton" expand="block">
+          <ion-icon name="search-circle-outline" size="large"></ion-icon>
+        </ion-button>
+
+        <ion-item *ngFor="let af of alumnosFaltas" >
+          <ion-label>{{af.Apellido1}}, {{af.Nombre}}-{{af.horasTotales}}Horas</ion-label>
+          <!--<ion-checkbox class="checkboxLeft" (click)="selectAlumno2(af)" slot="start"></ion-checkbox>-->
+        </ion-item>
+      </ng-container>
+      <ng-container *ngIf="compFiltro2 === true && a.NombreAsig === nombAsig && compAlumnos2 === true">
+        <ion-item>
+          <ion-label>Fecha inicio: </ion-label>
+          <ion-datetime [(ngModel)]="today" (change)="fechaIniComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre" max="{{today3}}"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Fecha fin: </ion-label>
+          <ion-datetime [(ngModel)]="today2" (change)="fechaFinComp()" displayFormat="DD MMM de YYYY" monthShortNames="Enero, Febrero, Marzo, Abril, Mayo, Junio, Julio, Agosto, Septiembre, Octubre, Noviembre, Diciembre" max="{{today4}}"></ion-datetime>
+        </ion-item>
+
+        <ion-button color="success" (click)="sendQueryFaltasTotales()" class="sendButton" expand="block">
           <ion-icon name="search-circle-outline" size="large"></ion-icon>
         </ion-button>
         <ion-item>
