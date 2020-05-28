@@ -75,11 +75,11 @@ export class MensajesPage implements OnInit {
     this.messages2 = [];
     console.log(this.search);
 
-    if (this.search === '') {
+    if (this.search.trim() === '') {
       this.resetArrayFindField();
     } else {
       for (let m of messagesFind) {
-        if (m.textoMensaje.includes(this.search)) this.messages2.push(m);
+        if (m.textoMensaje.toLowerCase().includes(this.search.toLowerCase())) this.messages2.push(m);
       }
     }
   }
