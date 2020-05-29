@@ -25,18 +25,18 @@
         <ion-textarea value="{{textMess}}" rows="5"></ion-textarea>
       </ion-card-content>
       <ion-item>
-        <ion-button slot="end" (click)="sendMailP()" *ngIf="compMailP"><ion-icon name="mail-outline"></ion-icon>P.</ion-button>
-        <ion-button slot="end" (click)="sendMailM()" *ngIf="compMailM"><ion-icon name="mail-outline"></ion-icon>Madre</ion-button>
-        <ion-button slot="end" (click)="sendMailA()" *ngIf="compMailA"><ion-icon name="mail-outline"></ion-icon>Alumno</ion-button>
+        <ion-button slot="end" (click)="sendMailP()" *ngIf="compMailP"><ion-icon name="mail-outline"></ion-icon> Padre</ion-button>
+        <ion-button slot="end" (click)="sendMailM()" *ngIf="compMailM"><ion-icon name="mail-outline"></ion-icon> Madre</ion-button>
+        <ion-button slot="end" (click)="sendMailA()" *ngIf="compMailA"><ion-icon name="mail-outline"></ion-icon> Alumno</ion-button>
       </ion-item>
       <ion-item>
-        <ion-button slot="end" (click)="sendWhatsP()" color="success" *ngIf="compTlfP"><ion-icon name="logo-whatsapp"></ion-icon>P.</ion-button>
-        <ion-button slot="end" (click)="sendWhatsM()" color="success" *ngIf="compTlfM"><ion-icon name="logo-whatsapp"></ion-icon>Madre</ion-button>
-        <ion-button slot="end" (click)="sendWhatsA()" color="success" *ngIf="compTlfA"><ion-icon name="logo-whatsapp"></ion-icon>Alumno</ion-button>
+        <ion-button slot="end" (click)="sendWhatsP()" color="success" *ngIf="compTlfP"><ion-icon name="logo-whatsapp"></ion-icon> Padre</ion-button>
+        <ion-button slot="end" (click)="sendWhatsM()" color="success" *ngIf="compTlfM"><ion-icon name="logo-whatsapp"></ion-icon> Madre</ion-button>
+        <ion-button slot="end" (click)="sendWhatsA()" color="success" *ngIf="compTlfA"><ion-icon name="logo-whatsapp"></ion-icon> Alumno</ion-button>
       </ion-item>
       <ion-item>
         <ion-button slot="end" (click)="goToMensajes()">Volver a Mensajes</ion-button>
-        <ion-button slot="end" (click)="goToMensajesEnviados()">ir a Enviados</ion-button>
+        <ion-button slot="end" (click)="goToMensajesEnviados()">Ir a Enviados</ion-button>
       </ion-item>
       <ion-item>
         <ion-button slot="end" (click)="archivarMensaje()" color="success">Archivar</ion-button>
