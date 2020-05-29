@@ -145,6 +145,7 @@ export class HomePage {
   navigation() {
     this.compFiltro = false;
     this.comp = false;
+    this.comp2 = false;
   }
 
   //Abre el menu

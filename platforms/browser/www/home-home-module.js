@@ -539,6 +539,7 @@ var HomePage = /** @class */ (function () {
     HomePage.prototype.navigation = function () {
         this.compFiltro = false;
         this.comp = false;
+        this.comp2 = false;
     };
     //Abre el menu
     HomePage.prototype.openFirst = function () {
